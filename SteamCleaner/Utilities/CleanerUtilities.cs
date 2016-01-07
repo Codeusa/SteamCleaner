@@ -46,6 +46,10 @@ namespace SteamCleaner.Utilities
             var steamDirectory = SteamUtilities.GetSteamPath();
             var defaultPath = SteamUtilities.FixPath(steamDirectory);
             var secondaryPath = SteamUtilities.FixPath(SteamUtilities.GetSecondarySteamInstallPath());
+            if (!Directory.Exists(secondaryPath))
+            {
+                secondaryPath = "./";
+            }
             var crawlableDirs = new List<string> {defaultPath, secondaryPath};
             var gameDirs =
                 crawlableDirs.Select(Directory.GetDirectories).SelectMany(directories => directories).ToList();
