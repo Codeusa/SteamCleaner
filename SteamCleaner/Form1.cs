@@ -27,7 +27,7 @@ namespace SteamCleaner
                 var rowId = foundFilesGridView.Rows.Add();
                 var row = foundFilesGridView.Rows[rowId];
 
-                row.Cells["FileColumn"].Value = Path.GetFileName(file.Path);
+                row.Cells["FileColumn"].Value = file.Path;
                 row.Cells["SizeColumn"].Value = StringUtilities.GetBytesReadable(file.Size);
             }
             statsLabel.Text = CleanerUtilities.TotalFiles() + " files have been found (" + CleanerUtilities.TotalTakenSpace() + ") ";
