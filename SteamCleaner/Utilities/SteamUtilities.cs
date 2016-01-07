@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 using Microsoft.Win32;
 
 #endregion
@@ -46,25 +47,32 @@ namespace SteamCleaner.Utilities
             return steamPath;
         }
 
+
         public static List<string> SteamPaths()
         {
-            return new List<string> {GetSteamPath(), FixPath(GetSecondarySteamInstallPath()).Replace("\\\\", "\\")};
+            var paths = new List<string> {GetSteamPath()};
+            paths.AddRange(GetSecondarySteamInstallPaths());
+            return paths;
         }
 
+        public static int CountOccurences(string needle, string haystack)
+        {
+            return (haystack.Length - haystack.Replace(needle, "").Length) / needle.Length;
+        }
 
-        public static string GetSecondarySteamInstallPath()
+        public static List<string> GetSecondarySteamInstallPaths()
         {
             var configPath = GetSteamPath() + "\\config\\config.vdf";
-            var data = File.ReadAllLines(configPath);
-            foreach (
-                var info in
-                    data.Where(t => t.Contains("BaseInstallFolder_1"))
-                        .Select(t => Regex.Replace(t, @"\s+", " ").Split(' '))
-                        .Where(info => info[2] != null))
+            var data = File.ReadAllText(configPath);
+            int numberOfInstallPaths = CountOccurences("BaseInstallFolder", data);
+            var dataArray = File.ReadAllLines(configPath);
+            var paths = new List<string>();
+            for (var i = 0; i < numberOfInstallPaths; i++)
             {
-                return info[2].TrimEnd('"').TrimStart('"');
+                var slot = i + 1;
+                paths.AddRange(from t in dataArray where t.Contains("BaseInstallFolder_" + slot) select t.Trim() into dataString let regex = new Regex("\\\"(.*)\\\"(.*)\\\"", RegexOptions.IgnoreCase) select regex.Match(dataString) into match where match.Success select FixPath(match.Groups[2].Value).Replace("\\\\", "\\"));
             }
-            return "";
+            return paths;
         }
     }
 }

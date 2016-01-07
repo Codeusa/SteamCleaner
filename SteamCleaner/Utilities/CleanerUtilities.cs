@@ -36,21 +36,15 @@ namespace SteamCleaner.Utilities
             }
             return files;
         }
-
+            
         public static List<Redistributables> FindRedistributables()
         {
             if (cachedRedistributables != null && !updateRedistributables)
             {
                 return cachedRedistributables;
             }
-            var steamDirectory = SteamUtilities.GetSteamPath();
-            var defaultPath = SteamUtilities.FixPath(steamDirectory);
-            var secondaryPath = SteamUtilities.FixPath(SteamUtilities.GetSecondarySteamInstallPath());
-            if (!Directory.Exists(secondaryPath))
-            {
-                secondaryPath = "./";
-            }
-            var crawlableDirs = new List<string> {defaultPath, secondaryPath};
+            var steamPaths = SteamUtilities.SteamPaths();
+            var crawlableDirs = steamPaths.Select(path => SteamUtilities.FixPath(path)).Where(appPath => Directory.Exists(appPath)).ToList();
             var gameDirs =
                 crawlableDirs.Select(Directory.GetDirectories).SelectMany(directories => directories).ToList();
             var redistFiles = new List<string>();
