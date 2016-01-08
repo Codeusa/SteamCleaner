@@ -53,6 +53,9 @@ namespace SteamCleaner
             // 
             // detectListLabel
             // 
+            this.detectListLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.detectListLabel.AutoSize = true;
             this.detectListLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.detectListLabel.Location = new System.Drawing.Point(12, 118);
@@ -65,6 +68,9 @@ namespace SteamCleaner
             // 
             this.foundFilesGridView.AllowUserToAddRows = false;
             this.foundFilesGridView.AllowUserToDeleteRows = false;
+            this.foundFilesGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.foundFilesGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.foundFilesGridView.BackgroundColor = System.Drawing.Color.White;
             this.foundFilesGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -108,6 +114,9 @@ namespace SteamCleaner
             // 
             // collectionLabel
             // 
+            this.collectionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.collectionLabel.AutoSize = true;
             this.collectionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.collectionLabel.Location = new System.Drawing.Point(12, 35);
@@ -212,7 +221,6 @@ namespace SteamCleaner
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(632, 472);
             this.MinimumSize = new System.Drawing.Size(632, 472);
             this.Name = "SteamCleaner";
             this.Text = "Steam Cleaner";

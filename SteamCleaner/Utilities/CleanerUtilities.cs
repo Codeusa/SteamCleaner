@@ -94,6 +94,7 @@ namespace SteamCleaner.Utilities
                         MessageBox.Show(ex.Message);
                     }
                 }
+                MessageBox.Show("Operation Completed!");
             }
         }
 
