@@ -47,10 +47,13 @@ namespace SteamCleaner
 
         private void cleanButton_Click(object sender, EventArgs e)
         {
-            CleanerUtilities.CleanData();
-            CleanerUtilities.updateRedistributables = true;
-            RefreshFiles();
-            MessageBox.Show("Operation Completed!");
+            if (CleanerUtilities.TotalFiles() > 0)
+            {
+                CleanerUtilities.CleanData();
+                CleanerUtilities.updateRedistributables = true;
+                RefreshFiles();
+            }
+            else MessageBox.Show("No files selected for cleaning");
         }
 
         private void twitterToolStripMenuItem_Click(object sender, EventArgs e)
@@ -72,5 +75,6 @@ namespace SteamCleaner
         {
             Process.Start("https://github.com/Codeusa/SteamCleaner/issues");
         }
+
     }
 }
