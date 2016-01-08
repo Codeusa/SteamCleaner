@@ -1,0 +1,92 @@
+﻿<Window x:Class="SteamCleaner.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:steamCleaner="clr-namespace:SteamCleaner"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="600" Width="1000"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"        
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"        
+        d:DataContext="{d:DesignInstance steamCleaner:MainWindowViewModel, IsDesignTimeCreatable=False}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/themes/materialdesigntheme.textblock.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <materialDesign:DialogHost>
+        <DockPanel>
+            <Menu IsMainMenu="True" DockPanel.Dock="Top">
+                <MenuItem Header="_File">
+                    <MenuItem Header="Twitter" Click="TwitterMenuItem_OnClick" />
+                    <MenuItem Header="GitHub" Click="GitHubMenuItem_OnClick" />
+                    <MenuItem Header="Borderless Gaming" Click="BorderlessGamingMenuItem_OnClick" />
+                    <MenuItem Header="Report A Bug" Click="ReportABugMenuItem_OnClick" />
+                </MenuItem>
+            </Menu>
+            <Grid Margin="32 8 32 32">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Style="{DynamicResource MaterialDesignTitleTextBlock}">Steam Paths:</TextBlock>
+                <ListBox Grid.Row="1" Margin="8" ItemsSource="{Binding Paths}" />
+            
+                <TextBlock Style="{DynamicResource MaterialDesignTitleTextBlock}"
+                        Grid.Column="1">Stats:</TextBlock>
+                <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Statistics}" />
+
+                <TextBlock Style="{DynamicResource MaterialDesignTitleTextBlock}"
+                        Grid.Row="2"
+                        >Redistributables:</TextBlock>
+                <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Style="{DynamicResource MaterialDesignFloatingActionButton}" Margin="8"
+                            ToolTip="Clean..."
+                            Command="{Binding CleanCommand}">
+                        <Viewbox Width="24" Height="24">
+                            <Canvas Width="24" Height="24">
+                                <Path Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" 
+                                  Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" />
+                            </Canvas>
+                        </Viewbox>
+                    </Button>
+                    <Button Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Margin="8"
+                            ToolTip="Refresh"
+                            Command="{Binding RefreshCommand}">
+                        <Viewbox Width="24" Height="24">
+                            <Canvas Width="24" Height="24">
+                                <Path Data="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z" 
+                                  Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" />
+                            </Canvas>
+                        </Viewbox>
+                    </Button>
+                </StackPanel>
+
+                <DataGrid Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding Files}" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="File" Binding="{Binding Path}" />
+                        <DataGridTextColumn Header="Size" Binding="{Binding SizeDescription}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </DockPanel>
+    </materialDesign:DialogHost>
+
+</Window>

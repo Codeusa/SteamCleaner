@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using MaterialDesignThemes.Wpf;
 
 #endregion
 
@@ -75,14 +77,23 @@ namespace SteamCleaner.Utilities
             return totalTakenSpace;
         }
 
-        public static void CleanData()
+        public static async Task CleanData()
         {
             var redistributables = FindRedistributables();
             var totalFiles = redistributables.Count;
-            var dialogResult = MessageBox.Show("Are you sure you wish to do this?",
-                totalFiles + " will be permanently deleted", MessageBoxButtons.YesNo);
-            if (dialogResult == DialogResult.Yes)
+
+            var dialog = new ConfirmationDialog
             {
+                MessageTextBlock =
+                {
+                    Text = "Are you sure you wish to do this?  " + totalFiles +
+                           " files will be permanently deleted."
+                }
+            };
+            await DialogHost.Show(dialog, (sender, args) =>
+            {
+                if (!"1".Equals(args.Parameter)) return;
+
                 foreach (var file in redistributables.Where(file => File.Exists(file.Path)))
                 {
                     try
@@ -91,10 +102,11 @@ namespace SteamCleaner.Utilities
                     }
                     catch (Exception ex)
                     {
+                        //TODO show in material dialog.
                         MessageBox.Show(ex.Message);
                     }
                 }
-            }
+            });
         }
 
         public class Redistributables
