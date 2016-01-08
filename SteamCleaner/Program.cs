@@ -1,8 +1,9 @@
 ﻿#region
 
 using System;
-using System.Windows.Forms;
+using System.Windows;
 using SteamCleaner.Utilities;
+using Application = System.Windows.Forms.Application;
 
 #endregion
 
@@ -18,8 +19,16 @@ namespace SteamCleaner
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Tools.CheckForUpdates();
-            Application.Run(new SteamCleaner());
+
+            //TODO restore
+            //Tools.CheckForUpdates();
+            //Application.Run(new SteamCleaner());
+
+
+            var app = new App { ShutdownMode = ShutdownMode.OnLastWindowClose };
+            //app.InitializeComponent();
+
+            app.Run(new MainWindow());
         }
     }
 }

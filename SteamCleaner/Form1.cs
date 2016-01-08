@@ -10,9 +10,11 @@ using SteamCleaner.Utilities;
 
 namespace SteamCleaner
 {
-    public partial class SteamCleaner : Form
+    public partial class SteamCleanerForm : Form
     {
-        public SteamCleaner()
+        //had to rename was conflicting with WPF app
+
+        public SteamCleanerForm()
         {
             InitializeComponent();
         }

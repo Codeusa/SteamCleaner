@@ -2,7 +2,7 @@
 
 namespace SteamCleaner
 {
-    partial class SteamCleaner
+    partial class SteamCleanerForm
     {
         /// <summary>
         /// Required designer variable.
@@ -30,7 +30,7 @@ namespace SteamCleaner
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SteamCleaner));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SteamCleanerForm));
             this.detectListLabel = new System.Windows.Forms.Label();
             this.foundFilesGridView = new System.Windows.Forms.DataGridView();
             this.FileColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
