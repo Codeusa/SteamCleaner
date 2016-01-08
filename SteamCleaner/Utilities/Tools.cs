@@ -146,7 +146,7 @@ namespace SteamCleaner.Utilities
                     var applicationVersion = Assembly.GetExecutingAssembly().GetName().Version;
                     if (applicationVersion.CompareTo(_newVersion) < 0)
                     {
-                        if (MessageBox.Show("A new version of Steam Cleaner is available", "A new update is available",
+                        if (MessageBox.Show("A new version of Steam Cleaner is available", "A new update is available,update now?",
                             MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                         {
                             GotoSite(_releasePageURL);
