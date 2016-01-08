@@ -16,7 +16,10 @@ namespace SteamCleaner
         void AppStartup(object sender, StartupEventArgs args)
         {
             
-            var mainWindow = new MainWindow();
+            var mainWindow = new MainWindow
+            {
+                DataContext = new MainWindowViewModel()
+            };
             mainWindow.Show();
         }
     }
