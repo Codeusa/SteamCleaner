@@ -71,6 +71,7 @@ namespace SteamCleaner
             this.foundFilesGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.FileColumn,
             this.SizeColumn});
+            this.foundFilesGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.foundFilesGridView.Location = new System.Drawing.Point(12, 163);
             this.foundFilesGridView.Name = "foundFilesGridView";
             this.foundFilesGridView.Size = new System.Drawing.Size(592, 258);
@@ -243,4 +244,3 @@ namespace SteamCleaner
         private System.Windows.Forms.ToolStripMenuItem reportABugToolStripMenuItem;
     }
 }
-
