@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="SteamCleaner.ConfirmationDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <StackPanel Margin="8 16 8 8">
+        <TextBlock x:Name="MessageTextBlock" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 16 0 0">
+            <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Style="{DynamicResource MaterialDesignFlatButton}">CANCEL</Button>
+            <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Style="{DynamicResource MaterialDesignFlatButton}" CommandParameter="1" Margin="8 0 0 0">DELETE</Button>
+        </StackPanel>
+    </StackPanel>
+
+</UserControl>

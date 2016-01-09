@@ -6,8 +6,11 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Net.NetworkInformation;
 using System.Reflection;
-using System.Windows.Forms;
+using System.Windows;
 using System.Xml;
+using MaterialDesignThemes.Wpf;
+using Point = System.Drawing.Point;
+using Size = System.Drawing.Size;
 
 #endregion
 
@@ -94,7 +97,7 @@ namespace SteamCleaner.Utilities
             }
         }
 
-        public static void CheckForUpdates()
+        public static async void CheckForUpdates()
         {
             if (HasInternetConnection)
             {
@@ -146,11 +149,16 @@ namespace SteamCleaner.Utilities
                     var applicationVersion = Assembly.GetExecutingAssembly().GetName().Version;
                     if (applicationVersion.CompareTo(_newVersion) < 0)
                     {
-                        if (MessageBox.Show("A new version of Steam Cleaner is available", "A new update is available,update now?",
-                            MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                        var dialog = new ConfirmationDialog
                         {
+                            MessageTextBlock =
+                            {
+                                Text = "A new Steam CLeaner update is available, update now?"
+                            }
+                        };
+                        var result = await DialogHost.Show(dialog);
+                        if ("1".Equals(result))
                             GotoSite(_releasePageURL);
-                        }
                     }
                 }
                 catch
@@ -184,8 +192,10 @@ namespace SteamCleaner.Utilities
             try
             {
                 // No version!
-                return Environment.GetEnvironmentVariable("AppData").Trim() + "\\" + Application.CompanyName + "\\" +
-                       Application.ProductName;
+                var companyAttribute = (AssemblyCompanyAttribute)Application.ResourceAssembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), false)[0];
+
+                return Environment.GetEnvironmentVariable("AppData").Trim() + "\\" + companyAttribute.Company + "\\" +
+                       Application.ResourceAssembly.FullName;
             }
             catch
             {
@@ -194,14 +204,14 @@ namespace SteamCleaner.Utilities
             try
             {
                 // Version, but chopped out
-                return Application.UserAppDataPath.Substring(0, Application.UserAppDataPath.LastIndexOf("\\"));
+                return GetUserAppDataPath().Substring(0, GetUserAppDataPath().LastIndexOf("\\"));
             }
             catch
             {
                 try
                 {
                     // App launch folder
-                    return Application.ExecutablePath.Substring(0, Application.ExecutablePath.LastIndexOf("\\"));
+                    return Assembly.GetEntryAssembly().Location.Substring(0, Assembly.GetEntryAssembly().Location.LastIndexOf("\\",  StringComparison.InvariantCultureIgnoreCase));
                 }
                 catch
                 {
@@ -225,6 +235,24 @@ namespace SteamCleaner.Utilities
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// APF version of user app data path
+        /// </summary>
+        /// <returns></returns>
+        private static string GetUserAppDataPath()
+        {
+            var assm = Assembly.GetEntryAssembly();
+            var at = typeof(AssemblyCompanyAttribute);
+            var r = assm.GetCustomAttributes(at, false);
+            var ct = ((AssemblyCompanyAttribute) (r[0]));
+            var path = Environment.GetFolderPath(
+                Environment.SpecialFolder.ApplicationData);
+            path += @"\" + ct.Company;
+            path += @"\" + assm.GetName().Version;
+
+            return path;
         }
     }
 }

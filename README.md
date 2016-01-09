@@ -1,6 +1,6 @@
 # Steam Cleaner
 
-![images](https://i.imgur.com/IM5aHsl.png)
+![images](https://i.imgur.com/FqwAzBI.gif)
 
 ### What is it?
 

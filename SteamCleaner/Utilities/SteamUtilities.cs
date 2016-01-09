@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using Microsoft.Win32;
 
 #endregion

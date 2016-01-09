@@ -2,10 +2,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using MaterialDesignThemes.Wpf;
 
 #endregion
 
@@ -75,26 +80,63 @@ namespace SteamCleaner.Utilities
             return totalTakenSpace;
         }
 
-        public static void CleanData()
+        public static async Task CleanData()
         {
             var redistributables = FindRedistributables();
             var totalFiles = redistributables.Count;
-            var dialogResult = MessageBox.Show("Are you sure you wish to do this?",
-                totalFiles + " will be permanently deleted", MessageBoxButtons.YesNo);
-            if (dialogResult == DialogResult.Yes)
+
+            var dialog = new ConfirmationDialog
             {
-                foreach (var file in redistributables.Where(file => File.Exists(file.Path)))
+                MessageTextBlock =
                 {
+                    Text = "Are you sure you wish to do this?  " + totalFiles +
+                           " files will be permanently deleted."
+                }
+            };
+            var result = await DialogHost.Show(dialog);
+            if (!"1".Equals(result)) return;
+
+            var progressBar = new ProgressBar
+            {
+                Maximum = redistributables.Count,
+                Width = 300,
+                Margin = new Thickness(32)
+            };
+            await
+                DialogHost.Show(progressBar,
+                    (DialogOpenedEventHandler)
+                        ((o, args) => DeleteFiles(redistributables, progressBar, args.Session)));
+        }
+
+        private static void DeleteFiles(IEnumerable<Redistributables> redistributables, ProgressBar progressBar, DialogSession dialogSession)
+        {
+            Task.Factory.StartNew(() =>
+            {
+                var failures = new List<string>();
+
+                foreach (var item in redistributables.Select((red, idx) => new {red, idx}))
+                {
+                    progressBar.Dispatcher.BeginInvoke(new Action(() => progressBar.Value = item.idx));
                     try
-                    {
-                        File.Delete(file.Path);
+                    {                        
+                        if (File.Exists(item.red.Path))
+                            File.Delete(item.red.Path);
                     }
-                    catch (Exception ex)
+                    catch
                     {
-                        MessageBox.Show(ex.Message);
+                        failures.Add(item.red.Path);                        
                     }
                 }
-            }
+
+                if (failures.Count > 0)
+                    progressBar.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        var failuresDialog = new FailuresDialog {FailuresListBox = {ItemsSource = failures}};
+                        dialogSession.UpdateContent(failuresDialog);
+                    }));
+                else
+                    progressBar.Dispatcher.BeginInvoke(new Action(dialogSession.Close));                
+            });            
         }
 
         public class Redistributables
