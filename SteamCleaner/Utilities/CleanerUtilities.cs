@@ -118,8 +118,7 @@ namespace SteamCleaner.Utilities
                 {
                     progressBar.Dispatcher.BeginInvoke(new Action(() => progressBar.Value = item.idx));
                     try
-                    {
-                        throw new ApplicationException("cunt");
+                    {                        
                         if (File.Exists(item.red.Path))
                             File.Delete(item.red.Path);
                     }
