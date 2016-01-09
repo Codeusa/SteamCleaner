@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using MaterialDesignThemes.Wpf;
 
 #endregion
@@ -98,12 +97,13 @@ namespace SteamCleaner.Utilities
                 {
                     try
                     {
+                        throw new ApplicationException("cunt");
                         File.Delete(file.Path);
                     }
                     catch (Exception ex)
                     {
-                        //TODO show in material dialog.
-                        MessageBox.Show(ex.Message);
+                        args.Cancel();
+                        args.Session.UpdateContent(ex.Message);
                     }
                 }
             });
