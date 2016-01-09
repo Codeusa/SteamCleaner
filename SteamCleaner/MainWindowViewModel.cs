@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using SteamCleaner.Utilities;
 
@@ -50,6 +51,8 @@ namespace SteamCleaner
 
         private void RunRefresh()
         {
+            //needs to be called to ensure we aren't loading a previously stored object.
+            CleanerUtilities.updateRedistributables = true;
             _pathsInternal.Clear();
             foreach (var steamPath in SteamUtilities.SteamPaths())
                 _pathsInternal.Add(steamPath);
@@ -59,6 +62,7 @@ namespace SteamCleaner
                 _filesInternal.Add(fileViewModel);         
             
             Statistics = CleanerUtilities.TotalFiles() + " files have been found (" + CleanerUtilities.TotalTakenSpace() + ") ";
+
         }
 
         private async void RunClean()
