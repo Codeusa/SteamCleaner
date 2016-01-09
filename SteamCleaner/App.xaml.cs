@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using SteamCleaner.Utilities;
 
 namespace SteamCleaner
 {
@@ -15,12 +16,14 @@ namespace SteamCleaner
 
         void AppStartup(object sender, StartupEventArgs args)
         {
-            
+
+          
             var mainWindow = new MainWindow
             {
                 DataContext = new MainWindowViewModel()
             };
             mainWindow.Show();
+            Tools.CheckForUpdates();
         }
     }
 }

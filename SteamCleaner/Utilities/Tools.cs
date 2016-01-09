@@ -153,9 +153,10 @@ namespace SteamCleaner.Utilities
                         {
                             MessageTextBlock =
                             {
-                                Text = "A new Steam CLeaner update is available, update now?"
+                                Text = "A new Steam Cleaner update is available, update now?"
                             }
                         };
+
                         var result = await DialogHost.Show(dialog);
                         if ("1".Equals(result))
                             GotoSite(_releasePageURL);
@@ -163,6 +164,7 @@ namespace SteamCleaner.Utilities
                 }
                 catch
                 {
+                    // ignored
                 }
             }
         }
@@ -192,7 +194,9 @@ namespace SteamCleaner.Utilities
             try
             {
                 // No version!
-                var companyAttribute = (AssemblyCompanyAttribute)Application.ResourceAssembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), false)[0];
+                var companyAttribute =
+                    (AssemblyCompanyAttribute)
+                        Application.ResourceAssembly.GetCustomAttributes(typeof (AssemblyCompanyAttribute), false)[0];
 
                 return Environment.GetEnvironmentVariable("AppData").Trim() + "\\" + companyAttribute.Company + "\\" +
                        Application.ResourceAssembly.FullName;
@@ -211,7 +215,10 @@ namespace SteamCleaner.Utilities
                 try
                 {
                     // App launch folder
-                    return Assembly.GetEntryAssembly().Location.Substring(0, Assembly.GetEntryAssembly().Location.LastIndexOf("\\",  StringComparison.InvariantCultureIgnoreCase));
+                    return Assembly.GetEntryAssembly()
+                        .Location.Substring(0,
+                            Assembly.GetEntryAssembly()
+                                .Location.LastIndexOf("\\", StringComparison.InvariantCultureIgnoreCase));
                 }
                 catch
                 {
@@ -238,15 +245,15 @@ namespace SteamCleaner.Utilities
         }
 
         /// <summary>
-        /// APF version of user app data path
+        ///     APF version of user app data path
         /// </summary>
         /// <returns></returns>
         private static string GetUserAppDataPath()
         {
             var assm = Assembly.GetEntryAssembly();
-            var at = typeof(AssemblyCompanyAttribute);
+            var at = typeof (AssemblyCompanyAttribute);
             var r = assm.GetCustomAttributes(at, false);
-            var ct = ((AssemblyCompanyAttribute) (r[0]));
+            var ct = (AssemblyCompanyAttribute) r[0];
             var path = Environment.GetFolderPath(
                 Environment.SpecialFolder.ApplicationData);
             path += @"\" + ct.Company;

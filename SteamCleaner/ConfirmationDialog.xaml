@@ -11,7 +11,7 @@
         <TextBlock x:Name="MessageTextBlock" />
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 16 0 0">
             <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Style="{DynamicResource MaterialDesignFlatButton}">CANCEL</Button>
-            <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Style="{DynamicResource MaterialDesignFlatButton}" CommandParameter="1" Margin="8 0 0 0">DELETE</Button>
+            <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Style="{DynamicResource MaterialDesignFlatButton}" CommandParameter="1" Margin="8 0 0 0">CONTINUE</Button>
         </StackPanel>
     </StackPanel>
 

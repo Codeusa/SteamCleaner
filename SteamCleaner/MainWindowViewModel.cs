@@ -27,6 +27,7 @@ namespace SteamCleaner
 
             //TODO run on a background thread, add spinner etc
             RunRefresh();
+      
         }
 
 
@@ -62,7 +63,6 @@ namespace SteamCleaner
                 _filesInternal.Add(fileViewModel);         
             
             Statistics = CleanerUtilities.TotalFiles() + " files have been found (" + CleanerUtilities.TotalTakenSpace() + ") ";
-
         }
 
         private async void RunClean()
@@ -70,6 +70,12 @@ namespace SteamCleaner
             await CleanerUtilities.CleanData();
 
             RunRefresh();
+          
+        }
+
+        private async void CheckForUpdate()
+        {
+            Tools.CheckForUpdates();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
