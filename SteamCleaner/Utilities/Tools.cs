@@ -154,7 +154,9 @@ namespace SteamCleaner.Utilities
                             MessageTextBlock =
                             {
                                 Text = "A new Steam Cleaner update is available, update now?"
+                                
                             }
+
                         };
 
                         var result = await DialogHost.Show(dialog);
