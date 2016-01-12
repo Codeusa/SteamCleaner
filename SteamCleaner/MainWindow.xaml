@@ -42,7 +42,7 @@
                         <ColumnDefinition Width="1*" />
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Style="{DynamicResource MaterialDesignTitleTextBlock}">Steam Paths:</TextBlock>
+                    <TextBlock Style="{DynamicResource MaterialDesignTitleTextBlock}">Game Paths:</TextBlock>
                     <materialDesign:ColorZone Mode="PrimaryLight" Grid.Row="1" CornerRadius="4" HorizontalAlignment="Left" Margin="0 8 32 0"
                                               materialDesign:ShadowAssist.ShadowDepth="Depth1">
                         <ListBox ItemsSource="{Binding Paths}" />
