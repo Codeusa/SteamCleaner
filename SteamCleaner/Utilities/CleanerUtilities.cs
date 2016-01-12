@@ -2,11 +2,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,11 +22,10 @@ namespace SteamCleaner.Utilities
 
         private static List<string> DetectRedistributablesWalk(string sDir)
         {
-
             var files = new List<string>();
-          
+
             foreach (var d in from d in Directory.GetDirectories(sDir)
-                let regex = new Regex("(.*)(directx|redist|miles|support)(.*)", RegexOptions.IgnoreCase)
+                let regex = new Regex("(.*)(directx|redist|miles|support|installer)(.*)", RegexOptions.IgnoreCase)
                 let match = regex.Match(d)
                 where match.Success
                 select d)
@@ -46,7 +43,7 @@ namespace SteamCleaner.Utilities
         private static List<string> DetectRenPyRedistributables(string sDir)
         {
             var files = new List<string>();
-            var filters = new string[] { "darwin", "linux" };
+            var filters = new[] {"darwin", "linux"};
             foreach (var d in Directory.GetDirectories(sDir).Where(d => d.Contains("\\lib")))
             {
                 files.AddRange(DetectRenPyRedistributables(d));
@@ -66,12 +63,19 @@ namespace SteamCleaner.Utilities
                 return cachedRedistributables;
             }
             var steamPaths = SteamUtilities.SteamPaths();
-            var crawlableDirs = steamPaths.Select(path => SteamUtilities.FixPath(path)).Where(appPath => Directory.Exists(appPath)).ToList();
-          
+            var crawlableDirs = steamPaths.Select(SteamUtilities.FixPath).Where(Directory.Exists).ToList();
+            crawlableDirs.AddRange(GoGUtilities.GoGGamePaths());
+
             var gameDirs =
                 crawlableDirs.Select(Directory.GetDirectories).SelectMany(directories => directories).ToList();
+            gameDirs.AddRange(GoGUtilities.GoGGamePaths());
             //Probably a better way to detect if some retarded publisher nested their package in a folder, but atm capcom is the only one i've seen do it. 
-            foreach (var nestedGameFolder in gameDirs.ToList().Where(gameDir => gameDir.ToLower().Contains("capcom")).Select(gameDir => new DirectoryInfo(gameDir).GetDirectories()).SelectMany(nestedGameFolders => nestedGameFolders))
+            foreach (
+                var nestedGameFolder in
+                    gameDirs.ToList()
+                        .Where(gameDir => gameDir.ToLower().Contains("capcom"))
+                        .Select(gameDir => new DirectoryInfo(gameDir).GetDirectories())
+                        .SelectMany(nestedGameFolders => nestedGameFolders))
             {
                 gameDirs.Add(nestedGameFolder.FullName);
             }
@@ -80,8 +84,7 @@ namespace SteamCleaner.Utilities
             foreach (var dir in gameDirs)
             {
                 redistFiles.AddRange(DetectRedistributablesWalk(dir));
-                  redistFiles.AddRange(DetectRenPyRedistributables(dir));
-            
+                redistFiles.AddRange(DetectRenPyRedistributables(dir));
             }
             var cleanAbleFiles = redistFiles.Select(file => new Redistributables
             {
@@ -134,7 +137,8 @@ namespace SteamCleaner.Utilities
                         ((o, args) => DeleteFiles(redistributables, progressBar, args.Session)));
         }
 
-        private static void DeleteFiles(IEnumerable<Redistributables> redistributables, ProgressBar progressBar, DialogSession dialogSession)
+        private static void DeleteFiles(IEnumerable<Redistributables> redistributables, ProgressBar progressBar,
+            DialogSession dialogSession)
         {
             Task.Factory.StartNew(() =>
             {
@@ -144,13 +148,13 @@ namespace SteamCleaner.Utilities
                 {
                     progressBar.Dispatcher.BeginInvoke(new Action(() => progressBar.Value = item.idx));
                     try
-                    {                        
+                    {
                         if (File.Exists(item.red.Path))
                             File.Delete(item.red.Path);
                     }
                     catch
                     {
-                        failures.Add(item.red.Path);                        
+                        failures.Add(item.red.Path);
                     }
                 }
 
@@ -161,8 +165,8 @@ namespace SteamCleaner.Utilities
                         dialogSession.UpdateContent(failuresDialog);
                     }));
                 else
-                    progressBar.Dispatcher.BeginInvoke(new Action(dialogSession.Close));                
-            });            
+                    progressBar.Dispatcher.BeginInvoke(new Action(dialogSession.Close));
+            });
         }
 
         public class Redistributables

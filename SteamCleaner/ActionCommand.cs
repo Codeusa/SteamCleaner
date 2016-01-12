@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#region
+
+using System;
 using System.Windows.Input;
+
+#endregion
 
 namespace SteamCleaner
 {
     public class ActionCommand : ICommand
     {
-        private readonly Action<object> _execute;
         private readonly Func<object, bool> _canExecute;
+        private readonly Action<object> _execute;
 
         public ActionCommand(Action execute) : this(_ => execute(), null)
         {
@@ -40,14 +40,8 @@ namespace SteamCleaner
 
         public event EventHandler CanExecuteChanged
         {
-            add
-            {
-                CommandManager.RequerySuggested += value;
-            }
-            remove
-            {
-                CommandManager.RequerySuggested -= value;
-            }
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
         }
 
         public void Refresh()

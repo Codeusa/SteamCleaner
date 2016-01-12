@@ -1,20 +1,20 @@
-﻿using System.Collections.Generic;
+﻿#region
+
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using SteamCleaner.Utilities;
+
+#endregion
 
 namespace SteamCleaner
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
-        private readonly ObservableCollection<string> _pathsInternal = new ObservableCollection<string>();
         private readonly ObservableCollection<FileViewModel> _filesInternal = new ObservableCollection<FileViewModel>();
+        private readonly ObservableCollection<string> _pathsInternal = new ObservableCollection<string>();
         private string _statistics;
 
         public MainWindowViewModel()
@@ -27,7 +27,6 @@ namespace SteamCleaner
 
             //TODO run on a background thread, add spinner etc
             RunRefresh();
-      
         }
 
 
@@ -50,6 +49,8 @@ namespace SteamCleaner
             }
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
         private void RunRefresh()
         {
             //needs to be called to ensure we aren't loading a previously stored object.
@@ -57,12 +58,20 @@ namespace SteamCleaner
             _pathsInternal.Clear();
             foreach (var steamPath in SteamUtilities.SteamPaths())
                 _pathsInternal.Add(steamPath);
+            if (GoGUtilities.GoGExisit())
+            {
+                _pathsInternal.Add("GoG Games Detected");
+            }
 
             _filesInternal.Clear();
-            foreach (var fileViewModel in CleanerUtilities.FindRedistributables().Select(r => new FileViewModel(r.Path, StringUtilities.GetBytesReadable(r.Size))))            
-                _filesInternal.Add(fileViewModel);         
-            
-            Statistics = CleanerUtilities.TotalFiles() + " files have been found (" + CleanerUtilities.TotalTakenSpace() + ") ";
+            foreach (
+                var fileViewModel in
+                    CleanerUtilities.FindRedistributables()
+                        .Select(r => new FileViewModel(r.Path, StringUtilities.GetBytesReadable(r.Size))))
+                _filesInternal.Add(fileViewModel);
+
+            Statistics = CleanerUtilities.TotalFiles() + " files have been found (" + CleanerUtilities.TotalTakenSpace() +
+                         ") ";
         }
 
         private async void RunClean()
@@ -70,15 +79,12 @@ namespace SteamCleaner
             await CleanerUtilities.CleanData();
 
             RunRefresh();
-          
         }
 
         private async void CheckForUpdate()
         {
             Tools.CheckForUpdates();
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

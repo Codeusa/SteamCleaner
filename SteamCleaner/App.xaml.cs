@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#region
+
 using System.Windows;
 using SteamCleaner.Utilities;
+
+#endregion
 
 namespace SteamCleaner
 {
     /// <summary>
-    /// Interaction logic for App.xaml
+    ///     Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
     {
-
-        void AppStartup(object sender, StartupEventArgs args)
+        private void AppStartup(object sender, StartupEventArgs args)
         {
-
-          
             var mainWindow = new MainWindow
             {
                 DataContext = new MainWindowViewModel()

@@ -56,20 +56,28 @@ namespace SteamCleaner.Utilities
 
         public static int CountOccurences(string needle, string haystack)
         {
-            return (haystack.Length - haystack.Replace(needle, "").Length) / needle.Length;
+            return (haystack.Length - haystack.Replace(needle, "").Length)/needle.Length;
         }
 
         public static List<string> GetSecondarySteamInstallPaths()
         {
             var configPath = GetSteamPath() + "\\config\\config.vdf";
             var data = File.ReadAllText(configPath);
-            int numberOfInstallPaths = CountOccurences("BaseInstallFolder", data);
+            var numberOfInstallPaths = CountOccurences("BaseInstallFolder", data);
             var dataArray = File.ReadAllLines(configPath);
             var paths = new List<string>();
             for (var i = 0; i < numberOfInstallPaths; i++)
             {
                 var slot = i + 1;
-                paths.AddRange(from t in dataArray where t.Contains("BaseInstallFolder_" + slot) select t.Trim() into dataString let regex = new Regex("\\\"(.*)\\\"(.*)\\\"", RegexOptions.IgnoreCase) select regex.Match(dataString) into match where match.Success select FixPath(match.Groups[2].Value).Replace("\\\\", "\\"));
+                paths.AddRange(from t in dataArray
+                    where t.Contains("BaseInstallFolder_" + slot)
+                    select t.Trim()
+                    into dataString
+                    let regex = new Regex("\\\"(.*)\\\"(.*)\\\"", RegexOptions.IgnoreCase)
+                    select regex.Match(dataString)
+                    into match
+                    where match.Success
+                    select FixPath(match.Groups[2].Value).Replace("\\\\", "\\"));
             }
             return paths;
         }
