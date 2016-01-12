@@ -67,8 +67,15 @@ namespace SteamCleaner.Utilities
             var crawlableDirs = steamPaths.Select(Steam.FixPath).Where(Directory.Exists).ToList();
             var gameDirs =
                 crawlableDirs.Select(Directory.GetDirectories).SelectMany(directories => directories).ToList();
-             gameDirs.AddRange(Gog.GetGames());
-             gameDirs.AddRange(Origin.GetGames());
+            if (Gog.Exisit())
+            {
+                gameDirs.AddRange(Gog.GetGames());
+            }
+            if (Origin.Exist())
+            {
+                gameDirs.AddRange(Origin.GetGames());
+            }
+            
             //Probably a better way to detect if some retarded publisher nested their package in a folder, but atm capcom is the only one i've seen do it. 
             foreach (
                 var nestedGameFolder in
