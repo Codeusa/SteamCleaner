@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using MaterialDesignThemes.Wpf;
+using SteamCleaner.Clients;
 
 #endregion
 
@@ -49,8 +50,7 @@ namespace SteamCleaner.Utilities
                 files.AddRange(DetectRenPyRedistributables(d));
                 foreach (var filter in filters.Where(filter => d.ToLower().Contains(filter)))
                 {
-                    files.AddRange(from f in Directory.GetFiles(d)
-                        select f);
+                    files.AddRange(from f in Directory.GetFiles(d) select f);
                 }
             }
             return files;
@@ -58,17 +58,17 @@ namespace SteamCleaner.Utilities
 
         public static List<Redistributables> FindRedistributables()
         {
+        
             if (cachedRedistributables != null && !updateRedistributables)
             {
                 return cachedRedistributables;
             }
-            var steamPaths = SteamUtilities.SteamPaths();
-            var crawlableDirs = steamPaths.Select(SteamUtilities.FixPath).Where(Directory.Exists).ToList();
-            crawlableDirs.AddRange(GoGUtilities.GoGGamePaths());
-
+            var steamPaths = Steam.SteamPaths();
+            var crawlableDirs = steamPaths.Select(Steam.FixPath).Where(Directory.Exists).ToList();
             var gameDirs =
                 crawlableDirs.Select(Directory.GetDirectories).SelectMany(directories => directories).ToList();
-            gameDirs.AddRange(GoGUtilities.GoGGamePaths());
+             gameDirs.AddRange(Gog.GetGames());
+             gameDirs.AddRange(Origin.GetGames());
             //Probably a better way to detect if some retarded publisher nested their package in a folder, but atm capcom is the only one i've seen do it. 
             foreach (
                 var nestedGameFolder in

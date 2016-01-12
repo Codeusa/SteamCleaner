@@ -11,7 +11,7 @@ using Microsoft.Win32;
 
 namespace SteamCleaner.Utilities
 {
-    internal class SteamUtilities
+    internal class Steam
     {
         public static string FixPath(string dir)
         {
@@ -22,21 +22,8 @@ namespace SteamCleaner.Utilities
 
         public static string GetSteamPath()
         {
-            var regPath = "";
             var steamPath = "";
-            var is64Bit = Environment.Is64BitOperatingSystem;
-            if (is64Bit)
-            {
-                Console.WriteLine("64 Bit operating system detected");
-                regPath = "SOFTWARE\\Wow6432Node\\Valve\\Steam";
-            }
-            else
-            {
-                Console.WriteLine("32 Bit operating system detected");
-                regPath = "SOFTWARE\\Valve\\Steam";
-            }
-
-            var key = Registry.LocalMachine.OpenSubKey(regPath);
+            var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Valve\Steam");
             if (key != null)
             {
                 var o = key.GetValue("InstallPath");

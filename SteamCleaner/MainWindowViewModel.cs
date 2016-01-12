@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using SteamCleaner.Clients;
 using SteamCleaner.Utilities;
 
 #endregion
@@ -56,11 +57,15 @@ namespace SteamCleaner
             //needs to be called to ensure we aren't loading a previously stored object.
             CleanerUtilities.updateRedistributables = true;
             _pathsInternal.Clear();
-            foreach (var steamPath in SteamUtilities.SteamPaths())
+            foreach (var steamPath in Steam.SteamPaths())
                 _pathsInternal.Add(steamPath);
-            if (GoGUtilities.GoGExisit())
+            if (Gog.Exisit())
             {
                 _pathsInternal.Add("GoG Games Detected");
+            }
+            if (Origin.Exist())
+            {
+                _pathsInternal.Add("Origin Games Detected");
             }
 
             _filesInternal.Clear();
