@@ -15,14 +15,40 @@ namespace SteamCleaner.Utilities
     {
         public static bool Exisit()
         {
-            var root = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\GOG.com\Games");
+            var regPath = "";
+            var is64Bit = Environment.Is64BitOperatingSystem;
+            if (is64Bit)
+            {
+                Console.WriteLine("64 Bit operating system detected");
+                regPath = @"SOFTWARE\Wow6432Node\GOG.com\Games";
+            }
+            else
+            {
+                Console.WriteLine("32 Bit operating system detected");
+                regPath = @"SOFTWARE\GOG.com\Games";
+            }
+
+            var root = Registry.LocalMachine.OpenSubKey(regPath);
             return root != null;
         }
 
         public static List<string> GetGames()
         {
             var paths = new List<string>();
-            var root = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\GOG.com\Games");
+            var regPath = "";
+            var is64Bit = Environment.Is64BitOperatingSystem;
+            if (is64Bit)
+            {
+                Console.WriteLine("64 Bit operating system detected");
+                regPath = @"SOFTWARE\Wow6432Node\GOG.com\Games";
+            }
+            else
+            {
+                Console.WriteLine("32 Bit operating system detected");
+                regPath = @"SOFTWARE\GOG.com\Games";
+            }
+
+            var root = Registry.LocalMachine.OpenSubKey(regPath);
             if (root != null)
                 paths.AddRange(
                     root.GetSubKeyNames()

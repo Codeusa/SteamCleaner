@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,7 +14,20 @@ namespace SteamCleaner.Clients
     {
         public static bool Exist()
         {
-            var key = Registry.LocalMachine.OpenSubKey(@"Software\Origin");
+            var regPath = "";
+            var is64Bit = Environment.Is64BitOperatingSystem;
+            if (is64Bit)
+            {
+                Console.WriteLine("64 Bit operating system detected");
+                regPath = @"Software\Wow6432Node\Origin";
+            }
+            else
+            {
+                Console.WriteLine("32 Bit operating system detected");
+                regPath = @"Software\Origin";
+            }
+
+            var key = Registry.LocalMachine.OpenSubKey(regPath);
             return key?.GetValue("ClientPath") != null;
         }
 
@@ -21,7 +35,20 @@ namespace SteamCleaner.Clients
         {
             if (!Exist()) return null;
             var paths = new List<string>();
-            var root = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Electronic Arts");
+            var regPath = "";
+            var is64Bit = Environment.Is64BitOperatingSystem;
+            if (is64Bit)
+            {
+                Console.WriteLine("64 Bit operating system detected");
+                regPath = @"SOFTWARE\Wow6432Node\Electronic Arts";
+            }
+            else
+            {
+                Console.WriteLine("32 Bit operating system detected");
+                regPath = @"SOFTWARE\Electronic Arts";
+            }
+
+            var root = Registry.LocalMachine.OpenSubKey(regPath);
             if (root != null)
                 paths.AddRange(
                     root.GetSubKeyNames()
@@ -30,8 +57,17 @@ namespace SteamCleaner.Clients
                         .Select(key => key.GetValue(@"Install Dir"))
                         .Select(o => o?.ToString())
                         .Where(Directory.Exists));
-
-            var legacyRoot = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\EA Games");
+            if (is64Bit)
+            {
+                Console.WriteLine("64 Bit operating system detected");
+                regPath = @"SOFTWARE\Wow6432Node\EA Games";
+            }
+            else
+            {
+                Console.WriteLine("32 Bit operating system detected");
+                regPath = @"SOFTWARE\EA Games";
+            }
+            var legacyRoot = Registry.LocalMachine.OpenSubKey(regPath);
             if (legacyRoot != null)
                 paths.AddRange(
                     legacyRoot.GetSubKeyNames()
