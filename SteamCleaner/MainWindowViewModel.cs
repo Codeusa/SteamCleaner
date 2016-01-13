@@ -67,6 +67,10 @@ namespace SteamCleaner
             {
                 _pathsInternal.Add("Origin Games Detected");
             }
+            if (Uplay.Exist())
+            {
+                _pathsInternal.Add("Uplay Games Detected");
+            }
 
             _filesInternal.Clear();
             foreach (

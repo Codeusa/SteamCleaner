@@ -75,7 +75,10 @@ namespace SteamCleaner.Utilities
             {
                 gameDirs.AddRange(Origin.GetGames());
             }
-            
+            if (Uplay.Exist())
+            {
+                gameDirs.AddRange(Uplay.GetGames());
+            }
             //Probably a better way to detect if some retarded publisher nested their package in a folder, but atm capcom is the only one i've seen do it. 
             foreach (
                 var nestedGameFolder in
