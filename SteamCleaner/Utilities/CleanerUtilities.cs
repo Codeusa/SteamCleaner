@@ -50,7 +50,7 @@ namespace SteamCleaner.Utilities
                 files.AddRange(DetectRenPyRedistributables(d));
                 foreach (var filter in filters.Where(filter => d.ToLower().Contains(filter)))
                 {
-                    files.AddRange(from f in Directory.GetFiles(d) select f);
+                    files.AddRange(Directory.GetFiles(d).Select(f => f));
                 }
             }
             return files;

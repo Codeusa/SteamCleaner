@@ -118,6 +118,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Clients\Gog.cs" />
     <Compile Include="Clients\Steam.cs" />
+    <Compile Include="Utilities\ExceptionHandler.cs" />
     <Compile Include="Utilities\StringUtilities.cs" />
     <Compile Include="Utilities\CleanerUtilities.cs" />
     <Compile Include="Utilities\Tools.cs" />
