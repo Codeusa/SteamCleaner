@@ -73,7 +73,10 @@ namespace SteamCleaner
             {
                 _pathsInternal.Add("Uplay Games Detected");
             }
-
+            if (Battlenet.Exisit())
+            {
+                _pathsInternal.Add("Battle.net Games Detected");
+            }
             _filesInternal.Clear();
             foreach (
                 var fileViewModel in

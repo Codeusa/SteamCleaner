@@ -102,6 +102,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Clients\Battlenet.cs" />
     <Compile Include="Clients\Origin.cs" />
     <Compile Include="Clients\Uplay.cs" />
     <Compile Include="ConfirmationDialog.xaml.cs">
