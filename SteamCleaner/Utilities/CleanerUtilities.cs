@@ -64,7 +64,7 @@ namespace SteamCleaner.Utilities
                 return cachedRedistributables;
             }
             var steamPaths = Steam.SteamPaths();
-            var crawlableDirs = steamPaths.Select(Steam.FixPath).Where(Directory.Exists).ToList();
+            var crawlableDirs = steamPaths.Select(steamPath => Steam.FixPath(steamPath)).Where(path => Directory.Exists(path)).ToList();
             var gameDirs =
                 crawlableDirs.Select(Directory.GetDirectories).SelectMany(directories => directories).ToList();
             if (Gog.Exisit())

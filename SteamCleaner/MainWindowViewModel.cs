@@ -2,9 +2,11 @@
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using SquaredInfinity.Foundation.Extensions;
 using SteamCleaner.Clients;
 using SteamCleaner.Utilities;
 
@@ -57,8 +59,8 @@ namespace SteamCleaner
             //needs to be called to ensure we aren't loading a previously stored object.
             CleanerUtilities.updateRedistributables = true;
             _pathsInternal.Clear();
-            foreach (var steamPath in Steam.SteamPaths())
-                _pathsInternal.Add(steamPath);
+            var steamPaths = Steam.SteamPaths();
+             _pathsInternal.AddRange(steamPaths.Select(steamPath => Steam.FixPath(steamPath)).Where(path => Directory.Exists(path)).ToList());
             if (Gog.Exisit())
             {
                 _pathsInternal.Add("GoG Games Detected");

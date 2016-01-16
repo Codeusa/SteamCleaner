@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 
 #endregion
@@ -61,11 +62,15 @@ namespace SteamCleaner.Utilities
 
         public static List<string> GetSecondarySteamInstallPaths()
         {
+            var paths = new List<string>();
             var configPath = GetSteamPath() + "\\config\\config.vdf";
+            if (!File.Exists(configPath))
+            {           
+                return paths;
+            }
             var data = File.ReadAllText(configPath);
             var numberOfInstallPaths = CountOccurences("BaseInstallFolder", data);
             var dataArray = File.ReadAllLines(configPath);
-            var paths = new List<string>();
             for (var i = 0; i < numberOfInstallPaths; i++)
             {
                 var slot = i + 1;
