@@ -14,7 +14,7 @@ namespace SteamCleaner.Clients
     internal class Battlenet
     {
 
-        public static bool Exisit()
+        public static bool Exist()
         {
 
            return Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) +"\\Battle.net");

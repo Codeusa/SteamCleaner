@@ -73,9 +73,13 @@ namespace SteamCleaner
             {
                 _pathsInternal.Add("Uplay Games Detected");
             }
-            if (Battlenet.Exisit())
+            if (Battlenet.Exist())
             {
                 _pathsInternal.Add("Battle.net Games Detected");
+            }
+            if (Desura.Exist())
+            {
+                _pathsInternal.Add("Desura Games Detected");
             }
             _filesInternal.Clear();
             foreach (
@@ -95,10 +99,6 @@ namespace SteamCleaner
             RunRefresh();
         }
 
-        private async void CheckForUpdate()
-        {
-            Tools.CheckForUpdates();
-        }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

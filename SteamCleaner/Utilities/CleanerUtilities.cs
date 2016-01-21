@@ -63,7 +63,7 @@ namespace SteamCleaner.Utilities
                 return cachedRedistributables;
             }
             var steamPaths = Steam.SteamPaths();
-            var crawlableDirs = steamPaths.Select(steamPath => Steam.FixPath(steamPath)).Where(path => Directory.Exists(path)).ToList();
+            var crawlableDirs = steamPaths.Select(Steam.FixPath).Where(Directory.Exists).ToList();
             var gameDirs =
                 crawlableDirs.Select(Directory.GetDirectories).SelectMany(directories => directories).ToList();
             if (Gog.Exisit())
@@ -78,9 +78,14 @@ namespace SteamCleaner.Utilities
             {
                 gameDirs.AddRange(Uplay.GetGames());
             }
-            if (Battlenet.Exisit())
+            if (Battlenet.Exist())
             {
+              
                 gameDirs.AddRange(Battlenet.GetGames());
+            }
+            if (Desura.Exist())
+            {
+                gameDirs.AddRange(Desura.GetGames());
             }
             //Probably a better way to detect if some retarded publisher nested their package in a folder, but atm capcom is the only one i've seen do it. 
             foreach (
