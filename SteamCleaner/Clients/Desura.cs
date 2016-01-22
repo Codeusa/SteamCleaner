@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using System;
 using System.Collections.Generic;
@@ -32,16 +32,16 @@ namespace SteamCleaner.Clients
 
         public static List<string> GetGames()
         {
-            var strs = new List<string>();
-            foreach (var lower in from registryKey in new List<RegistryKey>
+            var games = new List<string>();
+            foreach (var childKey in from registryKey in new List<RegistryKey>
             {
                 Registry.LocalMachine.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall"),
                 Registry.LocalMachine.OpenSubKey("Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall")
-            } let subKeyNames = registryKey.GetSubKeyNames() from lower in (from str in subKeyNames where str.StartsWith("Desura_", StringComparison.Ordinal) let openSubKey = registryKey.OpenSubKey(str) where openSubKey != null select openSubKey.GetValue("InstallLocation") into value where value != null select value.ToString().ToLower() into lower where !strs.Contains(lower) select lower) select lower)
+            } let subKeyNames = registryKey.GetSubKeyNames() from lower in (from str in subKeyNames where str.StartsWith("Desura_", StringComparison.Ordinal) let openSubKey = registryKey.OpenSubKey(str) where openSubKey != null select openSubKey.GetValue("InstallLocation") into value where value != null select value.ToString().ToLower() into lower where !games.Contains(lower) select lower) select lower)
             {
-                strs.Add(lower);
+                games.Add(childKey);
             }
-            return strs;
+            return games;
         }
     }
 }
