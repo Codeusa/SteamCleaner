@@ -37,7 +37,7 @@ namespace SteamCleaner.Clients
             {
                 Registry.LocalMachine.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall"),
                 Registry.LocalMachine.OpenSubKey("Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall")
-            } let subKeyNames = registryKey.GetSubKeyNames() from lower in (from str in subKeyNames where str.StartsWith("Desura_", StringComparison.Ordinal) let openSubKey = registryKey.OpenSubKey(str) where openSubKey != null select openSubKey.GetValue("InstallLocation") into value where value != null select value.ToString().ToLower() into lower where !games.Contains(lower) select lower) select lower)
+            } let childKeyNames = registryKey.GetSubKeyNames() from lower in (from str in childKeyNames where str.StartsWith("Desura_", StringComparison.Ordinal) let openSubKey = registryKey.OpenSubKey(str) where openSubKey != null select openSubKey.GetValue("InstallLocation") into value where value != null select value.ToString().ToLower() into lower where !games.Contains(lower) select lower) select lower)
             {
                 games.Add(childKey);
             }
