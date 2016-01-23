@@ -16,19 +16,8 @@ namespace SteamCleaner.Clients
 
         public static bool Exist()
         {
-            var regPath = "";
             var is64Bit = Environment.Is64BitOperatingSystem;
-            if (is64Bit)
-            {
-                Console.WriteLine("64 Bit operating system detected");
-                regPath = @"SOFTWARE\Wow6432Node\Desura";
-            }
-            else
-            {
-                Console.WriteLine("32 Bit operating system detected");
-                regPath = @"SOFTWARE\Desura";
-            }
-
+            var regPath = is64Bit ? @"Software\Wow6432Node\Microsoft\\Windows\CurrentVersion\Uninstall" : @"Software\Microsoft\Windows\CurrentVersion\Uninstall";
             var root = Registry.LocalMachine.OpenSubKey(regPath);
             return root != null;
         }
@@ -36,19 +25,8 @@ namespace SteamCleaner.Clients
         public static List<string> GetGames()
         {
             var paths = new List<string>();
-            var regPath = "";
             var is64Bit = Environment.Is64BitOperatingSystem;
-            if (is64Bit)
-            {
-                Console.WriteLine("64 Bit operating system detected");
-                regPath = @"Software\Wow6432Node\Microsoft\\Windows\CurrentVersion\Uninstall";
-            }
-            else
-            {
-                Console.WriteLine("32 Bit operating system detected");
-                regPath = @"Software\Microsoft\Windows\CurrentVersion\Uninstall";
-            }
-
+            var regPath = is64Bit ? @"Software\Wow6432Node\Microsoft\\Windows\CurrentVersion\Uninstall" : @"Software\Microsoft\Windows\CurrentVersion\Uninstall";          
             var root = Registry.LocalMachine.OpenSubKey(regPath);
             if (root != null)
             {
