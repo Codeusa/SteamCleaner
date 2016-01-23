@@ -81,6 +81,10 @@ namespace SteamCleaner
             {
                 _pathsInternal.Add("Desura Games Detected");
             }
+            if (Custom.Exist())
+            {
+                _pathsInternal.Add("Custom Game Paths Detected");
+            }
             _filesInternal.Clear();
             foreach (
                 var fileViewModel in
