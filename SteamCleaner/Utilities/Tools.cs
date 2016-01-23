@@ -28,16 +28,17 @@ namespace SteamCleaner.Utilities
 
         private static bool HasInternetConnection
         {
-            // There is no way you can reliably check if there is an internet connection, but we can come close
-            get
+             //this might be a possible way to check for internet connection, correct if wrong. 
+			try 
             {
-                var result = false;
+				using (var client = new WebClient())
 
                 try
                 {
-                    if (NetworkInterface.GetIsNetworkAvailable())
+					//this will be a test to see if it can establish an internet connection 
+					using var stream = client.OpenRead("https://www.google.com") 
                     {
-                        using (var p = new Ping())
+                      
                         {
                             result = (p.Send("8.8.8.8", 15000).Status == IPStatus.Success) ||
                                      (p.Send("8.8.4.4", 15000).Status == IPStatus.Success) ||
@@ -47,9 +48,8 @@ namespace SteamCleaner.Utilities
                 }
                 catch
                 {
+					return false; 
                 }
-
-                return result;
             }
         }
 
