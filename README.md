@@ -16,8 +16,6 @@ This software is under development
 
 - Download the latest build from: https://github.com/Codeusa/SteamCleaner/releases/latest
 
-- Install it
-
 - Run it
 
 
