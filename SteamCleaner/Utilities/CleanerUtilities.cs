@@ -105,7 +105,6 @@ namespace SteamCleaner.Utilities
             var gameDirs =
                 crawlableDirs.Select(Directory.GetDirectories).SelectMany(directories => directories).ToList();
             gameDirs.AddRange(GetAddtionalGames());
-            Nexon.GetGames();
             //Probably a better way to detect if some retarded publisher nested their package in a folder, but atm capcom is the only one i've seen do it. 
             foreach (
                 var nestedGameFolder in
