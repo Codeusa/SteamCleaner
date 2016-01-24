@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Windows;
-using Microsoft.Win32;
 
 #endregion
 
@@ -13,11 +11,11 @@ namespace SteamCleaner.Clients
 {
     internal class Battlenet
     {
-
         public static bool Exist()
         {
-
-           return Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) +"\\Battle.net");
+            return
+                Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) +
+                                 "\\Battle.net");
         }
 
 

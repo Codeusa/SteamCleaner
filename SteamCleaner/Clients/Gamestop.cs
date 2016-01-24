@@ -1,15 +1,13 @@
-﻿#region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.Win32;
-
-#endregion
 
 namespace SteamCleaner.Clients
 {
-    internal class Desura
+    class Gamestop
     {
         public static bool Exist()
         {
@@ -32,10 +30,10 @@ namespace SteamCleaner.Clients
             if (root != null)
             {
                 paths.AddRange(from subkeyName in root.GetSubKeyNames()
-                    where subkeyName.StartsWith("Desura_", StringComparison.Ordinal)
-                    select Registry.LocalMachine.OpenSubKey(regPath + "\\" + subkeyName)
+                               where subkeyName.StartsWith("Gamestop_", StringComparison.Ordinal)
+                               select Registry.LocalMachine.OpenSubKey(regPath + "\\" + subkeyName)
                     into subKey
-                    select subKey?.GetValue("InstallLocation").ToString());
+                               select subKey?.GetValue("Install_local").ToString());
             }
             return paths;
         }

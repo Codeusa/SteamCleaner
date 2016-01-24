@@ -27,7 +27,7 @@ namespace SteamCleaner.Clients
         public static List<string> GetGames()
         {
             var lines = File.ReadAllLines("custom.txt");
-            List<string> games = new List<string>(lines);
+            var games = new List<string>(lines);
             return games;
         }
     }

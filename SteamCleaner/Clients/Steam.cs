@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 
 #endregion
@@ -54,7 +53,7 @@ namespace SteamCleaner.Utilities
             var paths = new List<string>();
             var configPath = GetSteamPath() + "\\config\\config.vdf";
             if (!File.Exists(configPath))
-            {           
+            {
                 return paths;
             }
             var data = File.ReadAllText(configPath);

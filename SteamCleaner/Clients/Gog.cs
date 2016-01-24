@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows;
 using Microsoft.Win32;
 
 #endregion
@@ -15,7 +14,6 @@ namespace SteamCleaner.Utilities
     {
         public static bool Exisit()
         {
- 
             var is64Bit = Environment.Is64BitOperatingSystem;
             var regPath = is64Bit ? @"SOFTWARE\Wow6432Node\GOG.com\Games" : @"SOFTWARE\GOG.com\Games";
             var root = Registry.LocalMachine.OpenSubKey(regPath);
