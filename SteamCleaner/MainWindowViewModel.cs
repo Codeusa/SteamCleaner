@@ -80,6 +80,10 @@ namespace SteamCleaner
             {
                 _pathsInternal.Add("Custom Game Paths Detected");
             }
+            if (Nexon.Exist())
+            {
+                _pathsInternal.Add("Nexon Games Detected");
+            }
         }
         private void RunRefresh()
         {

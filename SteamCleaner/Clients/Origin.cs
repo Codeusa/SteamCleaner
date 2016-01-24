@@ -14,19 +14,9 @@ namespace SteamCleaner.Clients
     {
         public static bool Exist()
         {
-            var regPath = "";
+           
             var is64Bit = Environment.Is64BitOperatingSystem;
-            if (is64Bit)
-            {
-                Console.WriteLine("64 Bit operating system detected");
-                regPath = @"Software\Wow6432Node\Origin";
-            }
-            else
-            {
-                Console.WriteLine("32 Bit operating system detected");
-                regPath = @"Software\Origin";
-            }
-
+            var regPath = is64Bit ? @"Software\Wow6432Node\Origin" : @"Software\Origin";
             var key = Registry.LocalMachine.OpenSubKey(regPath);
             return key?.GetValue("ClientPath") != null;
         }
