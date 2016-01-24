@@ -54,13 +54,8 @@ namespace SteamCleaner
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void RunRefresh()
+        private void AddPaths(ObservableCollection<string> pathsInternal)
         {
-            //needs to be called to ensure we aren't loading a previously stored object.
-            CleanerUtilities.updateRedistributables = true;
-            _pathsInternal.Clear();
-            var steamPaths = Steam.SteamPaths();
-             _pathsInternal.AddRange(steamPaths.Select(steamPath => Steam.FixPath(steamPath)).Where(path => Directory.Exists(path)).ToList());
             if (Gog.Exisit())
             {
                 _pathsInternal.Add("GoG Games Detected");
@@ -85,6 +80,16 @@ namespace SteamCleaner
             {
                 _pathsInternal.Add("Custom Game Paths Detected");
             }
+        }
+        private void RunRefresh()
+        {
+            //needs to be called to ensure we aren't loading a previously stored object.
+            CleanerUtilities.updateRedistributables = true;
+            _pathsInternal.Clear();
+            var steamPaths = Steam.SteamPaths();
+            AddPaths(_pathsInternal);
+            _pathsInternal.AddRange(
+                steamPaths.Select(Steam.FixPath).Where(Directory.Exists).ToList());
             _filesInternal.Clear();
             foreach (
                 var fileViewModel in
