@@ -23,20 +23,9 @@ namespace SteamCleaner.Utilities
 
         public static string GetSteamPath()
         {
-            var regPath = "";
             var steamPath = "";
             var is64Bit = Environment.Is64BitOperatingSystem;
-            if (is64Bit)
-            {
-                Console.WriteLine("64 Bit operating system detected");
-                regPath = "SOFTWARE\\Wow6432Node\\Valve\\Steam";
-            }
-            else
-            {
-                Console.WriteLine("32 Bit operating system detected");
-                regPath = "SOFTWARE\\Valve\\Steam";
-            }
-
+            var regPath = is64Bit ? @"SOFTWARE\Wow6432Node\Valve\Steam" : @"SOFTWARE\Valve\Steam";
             var key = Registry.LocalMachine.OpenSubKey(regPath);
             if (key != null)
             {

@@ -56,16 +56,9 @@ namespace SteamCleaner.Utilities
             return files;
         }
 
-        public static List<Redistributables> FindRedistributables()
+        private static List<string> GetAddtionalGames()
         {
-            if (cachedRedistributables != null && !updateRedistributables)
-            {
-                return cachedRedistributables;
-            }
-            var steamPaths = Steam.SteamPaths();
-            var crawlableDirs = steamPaths.Select(steamPath => Steam.FixPath(steamPath)).Where(path => Directory.Exists(path)).ToList();
-            var gameDirs =
-                crawlableDirs.Select(Directory.GetDirectories).SelectMany(directories => directories).ToList();
+            var gameDirs = new List<string>();
             if (Gog.Exisit())
             {
                 gameDirs.AddRange(Gog.GetGames());
@@ -78,10 +71,32 @@ namespace SteamCleaner.Utilities
             {
                 gameDirs.AddRange(Uplay.GetGames());
             }
-            if (Battlenet.Exisit())
+            if (Battlenet.Exist())
             {
                 gameDirs.AddRange(Battlenet.GetGames());
             }
+            if (Desura.Exist())
+            {
+                gameDirs.AddRange(Desura.GetGames());
+            }
+            if (Custom.Exist())
+            {
+                gameDirs.AddRange(Custom.GetGames());
+            }
+            return gameDirs;
+        } 
+
+        public static List<Redistributables> FindRedistributables()
+        {
+            if (cachedRedistributables != null && !updateRedistributables)
+            {
+                return cachedRedistributables;
+            }
+            var steamPaths = Steam.SteamPaths();
+            var crawlableDirs = steamPaths.Select(Steam.FixPath).Where(Directory.Exists).ToList();
+            var gameDirs =
+                crawlableDirs.Select(Directory.GetDirectories).SelectMany(directories => directories).ToList();
+           gameDirs.AddRange(GetAddtionalGames());
             //Probably a better way to detect if some retarded publisher nested their package in a folder, but atm capcom is the only one i've seen do it. 
             foreach (
                 var nestedGameFolder in
