@@ -1,4 +1,5 @@
 ﻿using SteamCleaner.Analyzer;
+using SteamCleaner.Analyzer.Analyzers;
 using SteamCleaner.Analyzer.FileFinders;
 using SteamCleaner.Model;
 using System;
@@ -19,11 +20,20 @@ namespace SteamCleaner.Analyzer
         {
             analyzers = new List<IAnalyzer>()
             {
-                new SteamAnalyzer()
+                new SteamAnalyzer(),
+                new BattlenetAnalyzer(),
+                new DesuraAnalyzer(),
+                new GamestopAnalyzer(),
+                new GogAnalyzer(),
+                new NexonAnalyzer(),
+                new OriginAnalyzer(),
+                new UplayAnalyzer()
+
             };
             fileFinders = new List<IFileFinder>()
             {
-                new RedisFileFinder()
+                new RedisFileFinder(),
+                new RenPyRedisFileFinder()
             };
         }
 
@@ -38,7 +48,7 @@ namespace SteamCleaner.Analyzer
             callback.Report(Tuple.Create("Finding files", 50));
             List<FileInfo> files = FindFiles(pathResult.Item1, callback);
             callback.Report(Tuple.Create("Calculating", 90));
-            AnalyzeResult result = new AnalyzeResult(files, pathResult.Item2.Select(a => "Found files for " + a.Name));
+            AnalyzeResult result = new AnalyzeResult(files, pathResult.Item2.Select(a => "Found paths for " + a.Name).ToList());
             callback.Report(Tuple.Create("Done", 100));
             return result;
         }
@@ -59,7 +69,7 @@ namespace SteamCleaner.Analyzer
                     {
                         paths = analyzer.FindPaths();
                     }
-                    if (paths == null)
+                    if (paths == null || paths.Count() == 0)
                     {
                         callback.Report(Tuple.Create(string.Format("No paths for {0}", analyzer.GetType().Name), progress));
                         continue;

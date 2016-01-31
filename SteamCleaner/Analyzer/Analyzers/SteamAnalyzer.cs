@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace SteamCleaner.Analyzer
+namespace SteamCleaner.Analyzer.Analyzers
 {
     public class SteamAnalyzer : IAnalyzer
     {
@@ -28,7 +28,7 @@ namespace SteamCleaner.Analyzer
                 return null;
             }
             List<string> paths = new List<string>();
-            paths.Add(steamPath);
+            paths.Add(FixPath(steamPath));
             IEnumerable<string> secondaryPaths = FindSecondaryInstallPaths(steamPath);
             if (secondaryPaths != null)
             {

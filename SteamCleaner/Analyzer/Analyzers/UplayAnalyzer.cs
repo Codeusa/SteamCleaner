@@ -1,26 +1,28 @@
-﻿#region
-
+﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.Win32;
+using System.Text;
+using System.Threading.Tasks;
 
-#endregion
-
-namespace SteamCleaner.Clients
+namespace SteamCleaner.Analyzer.Analyzers
 {
-    internal class Uplay
+    public class UplayAnalyzer : IAnalyzer
     {
-        public static bool Exist()
+        public string Name => "Uplay";
+
+        public bool CheckExists()
         {
             var is64Bit = Environment.Is64BitOperatingSystem;
             var regPath = is64Bit ? @"Software\Wow6432Node\Ubisoft\Launcher" : @"Software\Ubisoft\Launcher";
-            var key = Registry.LocalMachine.OpenSubKey(regPath);
-            return key?.GetValue("InstallDir") != null;
+            using (var key = Registry.LocalMachine.OpenSubKey(regPath))
+            {
+                return key?.GetValue("InstallDir") != null;
+            }
         }
 
-        public static List<string> GetGames()
+        public IEnumerable<string> FindPaths()
         {
             var paths = new List<string>();
             var is64Bit = Environment.Is64BitOperatingSystem;

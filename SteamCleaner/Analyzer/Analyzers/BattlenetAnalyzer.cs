@@ -1,30 +1,26 @@
-﻿#region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
-#endregion
-
-namespace SteamCleaner.Clients
+namespace SteamCleaner.Analyzer.Analyzers
 {
-    internal class Battlenet
+    public class BattlenetAnalyzer : IAnalyzer
     {
-        public static bool Exist()
+        public string Name => "Battle.net";
+
+        public bool CheckExists()
         {
-            return
-                Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) +
-                                 "\\Battle.net");
+            return Directory.Exists(GetBattleNetPath());
         }
 
-
-        //There has to be a better way, my god what have I done.
-        public static List<string> GetGames()
+        public IEnumerable<string> FindPaths()
         {
             var paths = new List<string>();
-            var productPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) +
-                              "\\Battle.net\\Agent\\product.db";
+            var productPath = GetProductDbPath();
             if (File.Exists(productPath))
             {
                 var data = File.ReadAllText(productPath);
@@ -53,5 +49,18 @@ namespace SteamCleaner.Clients
             }
             return paths;
         }
+
+        private string GetProductDbPath()
+        {
+            return Path.Combine(GetBattleNetPath(),
+                                "\\Agent\\product.db");
+        }
+
+        private string GetBattleNetPath()
+        {
+            return Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) +
+                                       "\\Battle.net";
+        }
+
     }
 }

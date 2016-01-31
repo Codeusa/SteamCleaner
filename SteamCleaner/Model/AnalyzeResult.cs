@@ -9,15 +9,15 @@ namespace SteamCleaner.Model
 {
     public class AnalyzeResult
     {
-        public AnalyzeResult(IEnumerable<FileInfo> files, IEnumerable<string> usedAnalyers)
+        public AnalyzeResult(List<FileInfo> files, List<string> usedAnalyers)
         {
             this.Files = files;
             this.UsedAnalyzers = usedAnalyers;
             this.TotalSize = files.Sum(f => f.Length);
         }
 
-        public IEnumerable<FileInfo> Files { get; private set; }
+        public List<FileInfo> Files { get; private set; }
         public long TotalSize { get; private set; }
-        public IEnumerable<string> UsedAnalyzers { get; private set; }
+        public List<string> UsedAnalyzers { get; private set; }
     }
 }
