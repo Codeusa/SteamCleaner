@@ -9,6 +9,10 @@ using System.Windows.Input;
 using SquaredInfinity.Foundation.Extensions;
 using SteamCleaner.Clients;
 using SteamCleaner.Utilities;
+using SteamCleaner.Analyzer;
+using SteamCleaner.Model;
+using System;
+using System.Data;
 
 #endregion
 
@@ -16,26 +20,27 @@ namespace SteamCleaner
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
-        private readonly ObservableCollection<FileViewModel> _filesInternal = new ObservableCollection<FileViewModel>();
-        private readonly ObservableCollection<string> _pathsInternal = new ObservableCollection<string>();
+        private readonly AnalyzerService analyzerService;
         private string _statistics;
 
         public MainWindowViewModel()
         {
-            Paths = new ReadOnlyObservableCollection<string>(_pathsInternal);
-            Files = new ReadOnlyObservableCollection<FileViewModel>(_filesInternal);
+            Paths = new ObservableCollection<string>();
+            Files = new ObservableCollection<FileInfo>();
 
             CleanCommand = new ActionCommand(RunClean);
             RefreshCommand = new ActionCommand(RunRefresh);
+
+            analyzerService = new AnalyzerService();
 
             //TODO run on a background thread, add spinner etc
             RunRefresh();
         }
 
 
-        public ReadOnlyObservableCollection<string> Paths { get; }
+        public ObservableCollection<string> Paths { get; private set; }
 
-        public ReadOnlyObservableCollection<FileViewModel> Files { get; }
+        public ObservableCollection<FileInfo> Files { get; private set; }
 
         public ICommand RefreshCommand { get; }
 
@@ -53,56 +58,21 @@ namespace SteamCleaner
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        private void AddPaths(ObservableCollection<string> pathsInternal)
+        
+        private async void RunRefresh()
         {
-            if (Gog.Exisit())
-            {
-                _pathsInternal.Add("GoG Games Detected");
-            }
-            if (Origin.Exist())
-            {
-                _pathsInternal.Add("Origin Games Detected");
-            }
-            if (Uplay.Exist())
-            {
-                _pathsInternal.Add("Uplay Games Detected");
-            }
-            if (Battlenet.Exist())
-            {
-                _pathsInternal.Add("Battle.net Games Detected");
-            }
-            if (Desura.Exist())
-            {
-                _pathsInternal.Add("Desura Games Detected");
-            }
-            if (Custom.Exist())
-            {
-                _pathsInternal.Add("Custom Game Paths Detected");
-            }
-            if (Nexon.Exist())
-            {
-                _pathsInternal.Add("Nexon Games Detected");
-            }
+            Paths.Clear();
+            Files.Clear();
+            var callback = new Progress<Tuple<string, int>>(UpdateProgress);
+            AnalyzeResult result = await analyzerService.AnalyzeAsync(callback);
+            Files.AddRange(result.Files);
+            Paths.AddRange(result.UsedAnalyzers);            
+            Statistics = string.Format("{0} files found ({1})", result.Files.Count(), result.TotalSize);
         }
-        private void RunRefresh()
-        {
-            //needs to be called to ensure we aren't loading a previously stored object.
-            CleanerUtilities.updateRedistributables = true;
-            _pathsInternal.Clear();
-            var steamPaths = Steam.SteamPaths();
-            AddPaths(_pathsInternal);
-            _pathsInternal.AddRange(
-                steamPaths.Select(Steam.FixPath).Where(Directory.Exists).ToList());
-            _filesInternal.Clear();
-            foreach (
-                var fileViewModel in
-                    CleanerUtilities.FindRedistributables()
-                        .Select(r => new FileViewModel(r.Path, StringUtilities.GetBytesReadable(r.Size))))
-                _filesInternal.Add(fileViewModel);
 
-            Statistics = CleanerUtilities.TotalFiles() + " files have been found (" + CleanerUtilities.TotalTakenSpace() +
-                         ") ";
+        private void UpdateProgress(Tuple<string, int> progress)
+        {
+            Statistics = string.Format("{0} ({1})", progress.Item1, progress.Item2);
         }
 
         private async void RunClean()
