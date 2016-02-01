@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Windows;
@@ -63,10 +64,7 @@ namespace SteamCleaner.Utilities
                     var startup_parameters_mixed = new List<string>();
                     startup_parameters_mixed.AddRange(Environment.GetCommandLineArgs());
 
-                    var startup_parameters_lower = new List<string>();
-                    foreach (var s in startup_parameters_mixed)
-                        startup_parameters_lower.Add(s.Trim().ToLower());
-
+                    var startup_parameters_lower = startup_parameters_mixed.Select(s => s.Trim().ToLower()).ToList();
                     startup_parameters_mixed.Clear();
 
                     return startup_parameters_lower;

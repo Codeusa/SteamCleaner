@@ -1,9 +1,10 @@
-﻿using System;
+﻿#region
+
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+#endregion
 
 namespace SteamCleaner.Model
 {
@@ -11,9 +12,9 @@ namespace SteamCleaner.Model
     {
         public AnalyzeResult(List<FileInfo> files, List<string> usedAnalyers)
         {
-            this.Files = files;
-            this.UsedAnalyzers = usedAnalyers;
-            this.TotalSize = files.Sum(f => f.Length);
+            Files = files;
+            UsedAnalyzers = usedAnalyers;
+            TotalSize = files.Sum(f => f.Length);
         }
 
         public List<FileInfo> Files { get; private set; }

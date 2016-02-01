@@ -1,11 +1,12 @@
-﻿using Microsoft.Win32;
-using Newtonsoft.Json.Linq;
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Win32;
+using Newtonsoft.Json.Linq;
+
+#endregion
 
 namespace SteamCleaner.Analyzer.Analyzers
 {
@@ -32,7 +33,7 @@ namespace SteamCleaner.Analyzer.Analyzers
                 Environment.SpecialFolder.ApplicationData), @"NexonLauncher\apps-settings.db");
             var jsonData = JObject.Parse(File.ReadAllText(settingsDb)); // parse as array  
 
-            foreach (var pair in (JObject)jsonData["installedApps"])
+            foreach (var pair in (JObject) jsonData["installedApps"])
             {
                 var name = pair.Key;
                 var child = pair.Value;

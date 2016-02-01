@@ -1,13 +1,15 @@
-﻿using SteamCleaner.Analyzer;
-using SteamCleaner.Analyzer.Analyzers;
-using SteamCleaner.Analyzer.FileFinders;
-using SteamCleaner.Model;
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using SteamCleaner.Analyzer.Analyzers;
+using SteamCleaner.Analyzer.FileFinders;
+using SteamCleaner.Model;
+
+#endregion
 
 namespace SteamCleaner.Analyzer
 {
@@ -18,7 +20,7 @@ namespace SteamCleaner.Analyzer
 
         public AnalyzerService()
         {
-            analyzers = new List<IAnalyzer>()
+            analyzers = new List<IAnalyzer>
             {
                 new SteamAnalyzer(),
                 new BattlenetAnalyzer(),
@@ -28,16 +30,16 @@ namespace SteamCleaner.Analyzer
                 new NexonAnalyzer(),
                 new OriginAnalyzer(),
                 new UplayAnalyzer()
-
             };
-            fileFinders = new List<IFileFinder>()
+            fileFinders = new List<IFileFinder>
             {
                 new RedisFileFinder(),
                 new RenPyRedisFileFinder()
             };
         }
 
-        public Task<AnalyzeResult> AnalyzeAsync(IProgress<Tuple<string, int>> callback) => Task.Run(() => Analyze(callback));
+        public Task<AnalyzeResult> AnalyzeAsync(IProgress<Tuple<string, int>> callback)
+            => Task.Run(() => Analyze(callback));
 
         private AnalyzeResult Analyze(IProgress<Tuple<string, int>> callback)
         {
@@ -46,19 +48,19 @@ namespace SteamCleaner.Analyzer
             callback.Report(Tuple.Create("Checking nesting", 50));
             CheckNesting(pathResult.Item1);
             callback.Report(Tuple.Create("Finding files", 50));
-            List<FileInfo> files = FindFiles(pathResult.Item1, callback);
+            var files = FindFiles(pathResult.Item1, callback);
             callback.Report(Tuple.Create("Calculating", 90));
-            AnalyzeResult result = new AnalyzeResult(files, pathResult.Item2.Select(a => "Found paths for " + a.Name).ToList());
+            var result = new AnalyzeResult(files, pathResult.Item2.Select(a => "Found paths for " + a.Name).ToList());
             callback.Report(Tuple.Create("Done", 100));
             return result;
         }
-        
+
         private Tuple<List<string>, List<IAnalyzer>> FindPaths(IProgress<Tuple<string, int>> callback)
         {
-            List<string> allPaths = new List<string>();
-            List<IAnalyzer> usedAnalyzers = new List<IAnalyzer>();
-            int progress = 0;
-            int updateAmount = 50 / analyzers.Count;
+            var allPaths = new List<string>();
+            var usedAnalyzers = new List<IAnalyzer>();
+            var progress = 0;
+            var updateAmount = 50/analyzers.Count;
             foreach (var analyzer in analyzers)
             {
                 progress += updateAmount;
@@ -71,7 +73,8 @@ namespace SteamCleaner.Analyzer
                     }
                     if (paths == null || paths.Count() == 0)
                     {
-                        callback.Report(Tuple.Create(string.Format("No paths for {0}", analyzer.GetType().Name), progress));
+                        callback.Report(Tuple.Create(string.Format("No paths for {0}", analyzer.GetType().Name),
+                            progress));
                         continue;
                     }
                     allPaths.AddRange(paths);
@@ -89,15 +92,15 @@ namespace SteamCleaner.Analyzer
 
         private List<FileInfo> FindFiles(List<string> paths, IProgress<Tuple<string, int>> callback)
         {
-            List<FileInfo> allFiles = new List<FileInfo>();
-            int progress = 50;
-            int updateAmount = 40 / fileFinders.Count;
+            var allFiles = new List<FileInfo>();
+            var progress = 50;
+            var updateAmount = 40/fileFinders.Count;
             foreach (var finder in fileFinders)
             {
                 progress += updateAmount;
                 try
                 {
-                    IEnumerable<string> files = finder.FindFiles(paths);
+                    var files = finder.FindFiles(paths);
                     if (paths == null)
                     {
                         callback.Report(Tuple.Create(string.Format("No files for {0}", finder.GetType().Name), progress));
@@ -118,9 +121,9 @@ namespace SteamCleaner.Analyzer
         private void CheckNesting(List<string> paths)
         {
             //Check if this still works!
-            var nested = paths.Select(gameDir => Directory.GetDirectories(gameDir))
-                              .SelectMany(nestedGameFolders => nestedGameFolders)
-                              .ToList();
+            var nested = paths.Select(Directory.GetDirectories)
+                .SelectMany(nestedGameFolders => nestedGameFolders)
+                .ToList();
             paths.AddRange(nested);
         }
 
@@ -128,6 +131,5 @@ namespace SteamCleaner.Analyzer
         {
             return string.Format("Error with analyzer: {0}. Message: {1}", obj.GetType().Name, e.Message);
         }
-
     }
 }

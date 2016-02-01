@@ -1,9 +1,11 @@
-﻿using Microsoft.Win32;
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Win32;
+
+#endregion
 
 namespace SteamCleaner.Analyzer.Analyzers
 {
@@ -31,12 +33,12 @@ namespace SteamCleaner.Analyzer.Analyzers
                 var regPath = is64Bit
                     ? @"Software\Wow6432Node\Microsoft\\Windows\CurrentVersion\Uninstall"
                     : @"Software\Microsoft\Windows\CurrentVersion\Uninstall";
-                List<string> paths = new List<string>();
+                var paths = new List<string>();
                 paths.AddRange(from subkeyName in rootKey.GetSubKeyNames()
-                               where subkeyName.StartsWith("Gamestop_", StringComparison.Ordinal)
-                               select Registry.LocalMachine.OpenSubKey(regPath + "\\" + subkeyName)
-                               into subKey
-                               select subKey?.GetValue("Install_local").ToString());
+                    where subkeyName.StartsWith("Gamestop_", StringComparison.Ordinal)
+                    select Registry.LocalMachine.OpenSubKey(regPath + "\\" + subkeyName)
+                    into subKey
+                    select subKey?.GetValue("Install_local").ToString());
                 return paths;
             }
         }

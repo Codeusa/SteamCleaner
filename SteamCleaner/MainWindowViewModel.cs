@@ -1,22 +1,19 @@
 ﻿#region
 
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows.Input;
-using SquaredInfinity.Foundation.Extensions;
-using SteamCleaner.Utilities;
-using SteamCleaner.Analyzer;
-using SteamCleaner.Model;
-using System;
-using System.Data;
 using System.Threading.Tasks;
-using MaterialDesignThemes.Wpf;
-using System.Windows.Controls;
 using System.Windows;
+using System.Windows.Controls;
+using MaterialDesignThemes.Wpf;
+using SquaredInfinity.Foundation.Extensions;
+using SteamCleaner.Analyzer;
 using SteamCleaner.Cleaner;
+using SteamCleaner.Model;
+using SteamCleaner.Utilities;
 
 #endregion
 
@@ -26,19 +23,19 @@ namespace SteamCleaner
     {
         private readonly AnalyzerService analyzerService;
         private readonly CleanerService cleanerService;
-        private string _statistics;
-        
-        private AnalyzeResult currentResult = null;
 
         private bool _canRefresh;
+        private string _statistics;
+
+        private AnalyzeResult currentResult;
 
         public MainWindowViewModel()
         {
             Paths = new ObservableCollection<string>();
             Files = new ObservableCollection<FileInfo>();
 
-            CleanCommand = new ActionCommand((o) => RunClean(), (o) => CanRefresh);
-            RefreshCommand = new ActionCommand(async (o) => await RunRefresh(), (o) => CanRefresh);
+            CleanCommand = new ActionCommand(o => RunClean(), o => CanRefresh);
+            RefreshCommand = new ActionCommand(async o => await RunRefresh(), o => CanRefresh);
 
             analyzerService = new AnalyzerService();
             cleanerService = new CleanerService();
@@ -46,10 +43,10 @@ namespace SteamCleaner
             //TODO run on a background thread, add spinner etc
             Init();
         }
-        
-        public ObservableCollection<string> Paths { get; private set; }
 
-        public ObservableCollection<FileInfo> Files { get; private set; }
+        public ObservableCollection<string> Paths { get; }
+
+        public ObservableCollection<FileInfo> Files { get; }
 
         public ActionCommand RefreshCommand { get; }
 
@@ -57,10 +54,7 @@ namespace SteamCleaner
 
         public bool CanRefresh
         {
-            get
-            {
-                return _canRefresh;
-            }
+            get { return _canRefresh; }
             set
             {
                 _canRefresh = value;
@@ -93,10 +87,11 @@ namespace SteamCleaner
             Paths.Clear();
             Files.Clear();
             var callback = new Progress<Tuple<string, int>>(UpdateProgress);
-            AnalyzeResult result = await analyzerService.AnalyzeAsync(callback);
+            var result = await analyzerService.AnalyzeAsync(callback);
             Files.AddRange(result.Files);
             Paths.AddRange(result.UsedAnalyzers);
-            Statistics = string.Format("{0} files found ({1})", result.Files.Count, StringUtilities.GetBytesReadable(result.TotalSize));
+            Statistics = string.Format("{0} files found ({1})", result.Files.Count,
+                StringUtilities.GetBytesReadable(result.TotalSize));
             currentResult = result;
             CanRefresh = true;
         }
@@ -128,7 +123,8 @@ namespace SteamCleaner
                     DialogHost.Show(progressBar,
                         (DialogOpenedEventHandler)
                             ((o, args) => StartCleaning(progressBar, args.Session)));
-            } else
+            }
+            else
             {
                 CanRefresh = true;
             }
@@ -136,18 +132,14 @@ namespace SteamCleaner
 
         private async void StartCleaning(ProgressBar progressBar, DialogSession session)
         {
-            var callback = new Progress<int>((i) =>
-            {
-                progressBar.Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    progressBar.Value = i;
-                }));
-            });
+            var callback =
+                new Progress<int>(
+                    i => { progressBar.Dispatcher.BeginInvoke(new Action(() => { progressBar.Value = i; })); });
             var result = await cleanerService.CleanAsync(currentResult, callback);
             if (result.Failures.Count > 0)
                 await progressBar.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    var failuresDialog = new FailuresDialog { FailuresListBox = { ItemsSource = result.Failures } };
+                    var failuresDialog = new FailuresDialog {FailuresListBox = {ItemsSource = result.Failures}};
                     session.UpdateContent(failuresDialog);
                 }));
             else
