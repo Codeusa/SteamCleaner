@@ -99,33 +99,40 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionCommand.cs" />
+    <Compile Include="Analyzer\Analyzers\BattlenetAnalyzer.cs" />
+    <Compile Include="Analyzer\Analyzers\CustomAnalyzer.cs" />
+    <Compile Include="Analyzer\Analyzers\DesuraAnalyzer.cs" />
+    <Compile Include="Analyzer\Analyzers\GamestopAnalyzer.cs" />
+    <Compile Include="Analyzer\Analyzers\GogAnalyzer.cs" />
+    <Compile Include="Analyzer\Analyzers\NexonAnalyzer.cs" />
+    <Compile Include="Analyzer\Analyzers\OriginAnalyzer.cs" />
+    <Compile Include="Analyzer\Analyzers\UplayAnalyzer.cs" />
+    <Compile Include="Analyzer\FileFinders\RenPyRedisFileFinder.cs" />
+    <Compile Include="Analyzer\FileFinders\RedisFileFinder.cs" />
+    <Compile Include="Analyzer\IAnalyzer.cs" />
+    <Compile Include="Analyzer\Analyzers\SteamAnalyzer.cs" />
+    <Compile Include="Analyzer\IFileFinder.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Clients\Battlenet.cs" />
-    <Compile Include="Clients\CustomPaths.cs" />
-    <Compile Include="Clients\Desura.cs" />
-    <Compile Include="Clients\Gamestop.cs" />
-    <Compile Include="Clients\Nexon.cs" />
-    <Compile Include="Clients\Origin.cs" />
-    <Compile Include="Clients\Uplay.cs" />
+    <Compile Include="Analyzer\AnalyzerService.cs" />
+    <Compile Include="Cleaner\CleanerService.cs" />
     <Compile Include="ConfirmationDialog.xaml.cs">
       <DependentUpon>ConfirmationDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="FailuresDialog.xaml.cs">
       <DependentUpon>FailuresDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FileViewModel.cs" />
+    <Compile Include="FileSizeConverter.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="Model\AnalyzeResult.cs" />
+    <Compile Include="Model\CleanResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Clients\Gog.cs" />
-    <Compile Include="Clients\Steam.cs" />
     <Compile Include="Utilities\ExceptionHandler.cs" />
     <Compile Include="Utilities\StringUtilities.cs" />
-    <Compile Include="Utilities\CleanerUtilities.cs" />
     <Compile Include="Utilities\Tools.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

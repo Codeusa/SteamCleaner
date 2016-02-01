@@ -21,6 +21,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/themes/materialdesigntheme.textblock.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <steamCleaner:FileSizeConverter x:Key="FileSizeConverter"/>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -49,7 +50,7 @@
                     </materialDesign:ColorZone>
 
                     <TextBlock Style="{DynamicResource MaterialDesignTitleTextBlock}"
-                               Grid.Column="1">Stats:</TextBlock>
+                               Grid.Column="1">Status:</TextBlock>
                     <materialDesign:PopupBox Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right"  PlacementMode="BottomAndAlignRightEdges" Margin="0 0 -4 0">
                         <StackPanel>
                             <Button Content="Twitter" Click="TwitterMenuItem_OnClick" />
@@ -64,8 +65,8 @@
             <TextBlock Grid.Row="1" Style="{DynamicResource MaterialDesignTitleTextBlock}" Margin="16 16 0 16">Redistributables:</TextBlock>
             <DataGrid Grid.Row="2" ItemsSource="{Binding Files}" AutoGenerateColumns="False" IsReadOnly="True">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="File" Binding="{Binding Path}" />
-                    <DataGridTextColumn Header="Size" Binding="{Binding SizeDescription}" />
+                    <DataGridTextColumn Header="File" Binding="{Binding FullName}" />
+                    <DataGridTextColumn Header="Size" Binding="{Binding Length, Converter={StaticResource FileSizeConverter}}" />
                 </DataGrid.Columns>
             </DataGrid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1" Margin="0 -60 8 0">

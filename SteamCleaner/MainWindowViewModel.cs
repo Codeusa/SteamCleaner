@@ -7,8 +7,16 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using SquaredInfinity.Foundation.Extensions;
-using SteamCleaner.Clients;
 using SteamCleaner.Utilities;
+using SteamCleaner.Analyzer;
+using SteamCleaner.Model;
+using System;
+using System.Data;
+using System.Threading.Tasks;
+using MaterialDesignThemes.Wpf;
+using System.Windows.Controls;
+using System.Windows;
+using SteamCleaner.Cleaner;
 
 #endregion
 
@@ -16,30 +24,50 @@ namespace SteamCleaner
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
-        private readonly ObservableCollection<FileViewModel> _filesInternal = new ObservableCollection<FileViewModel>();
-        private readonly ObservableCollection<string> _pathsInternal = new ObservableCollection<string>();
+        private readonly AnalyzerService analyzerService;
+        private readonly CleanerService cleanerService;
         private string _statistics;
+        
+        private AnalyzeResult currentResult = null;
+
+        private bool _canRefresh;
 
         public MainWindowViewModel()
         {
-            Paths = new ReadOnlyObservableCollection<string>(_pathsInternal);
-            Files = new ReadOnlyObservableCollection<FileViewModel>(_filesInternal);
+            Paths = new ObservableCollection<string>();
+            Files = new ObservableCollection<FileInfo>();
 
-            CleanCommand = new ActionCommand(RunClean);
-            RefreshCommand = new ActionCommand(RunRefresh);
+            CleanCommand = new ActionCommand((o) => RunClean(), (o) => CanRefresh);
+            RefreshCommand = new ActionCommand(async (o) => await RunRefresh(), (o) => CanRefresh);
+
+            analyzerService = new AnalyzerService();
+            cleanerService = new CleanerService();
 
             //TODO run on a background thread, add spinner etc
-            RunRefresh();
+            Init();
         }
+        
+        public ObservableCollection<string> Paths { get; private set; }
 
+        public ObservableCollection<FileInfo> Files { get; private set; }
 
-        public ReadOnlyObservableCollection<string> Paths { get; }
+        public ActionCommand RefreshCommand { get; }
 
-        public ReadOnlyObservableCollection<FileViewModel> Files { get; }
+        public ActionCommand CleanCommand { get; }
 
-        public ICommand RefreshCommand { get; }
-
-        public ICommand CleanCommand { get; }
+        public bool CanRefresh
+        {
+            get
+            {
+                return _canRefresh;
+            }
+            set
+            {
+                _canRefresh = value;
+                CleanCommand.Refresh();
+                RefreshCommand.Refresh();
+            }
+        }
 
         public string Statistics
         {
@@ -54,64 +82,93 @@ namespace SteamCleaner
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void AddPaths(ObservableCollection<string> pathsInternal)
+        private async void Init()
         {
-            if (Gog.Exisit())
-            {
-                _pathsInternal.Add("GoG Games Detected");
-            }
-            if (Origin.Exist())
-            {
-                _pathsInternal.Add("Origin Games Detected");
-            }
-            if (Uplay.Exist())
-            {
-                _pathsInternal.Add("Uplay Games Detected");
-            }
-            if (Battlenet.Exist())
-            {
-                _pathsInternal.Add("Battle.net Games Detected");
-            }
-            if (Desura.Exist())
-            {
-                _pathsInternal.Add("Desura Games Detected");
-            }
-            if (Custom.Exist())
-            {
-                _pathsInternal.Add("Custom Game Paths Detected");
-            }
-            if (Nexon.Exist())
-            {
-                _pathsInternal.Add("Nexon Games Detected");
-            }
+            await RunRefresh();
         }
-        private void RunRefresh()
-        {
-            //needs to be called to ensure we aren't loading a previously stored object.
-            CleanerUtilities.updateRedistributables = true;
-            _pathsInternal.Clear();
-            var steamPaths = Steam.SteamPaths();
-            AddPaths(_pathsInternal);
-            _pathsInternal.AddRange(
-                steamPaths.Select(Steam.FixPath).Where(Directory.Exists).ToList());
-            _filesInternal.Clear();
-            foreach (
-                var fileViewModel in
-                    CleanerUtilities.FindRedistributables()
-                        .Select(r => new FileViewModel(r.Path, StringUtilities.GetBytesReadable(r.Size))))
-                _filesInternal.Add(fileViewModel);
 
-            Statistics = CleanerUtilities.TotalFiles() + " files have been found (" + CleanerUtilities.TotalTakenSpace() +
-                         ") ";
+        private async Task RunRefresh()
+        {
+            CanRefresh = false;
+            Paths.Clear();
+            Files.Clear();
+            var callback = new Progress<Tuple<string, int>>(UpdateProgress);
+            AnalyzeResult result = await analyzerService.AnalyzeAsync(callback);
+            Files.AddRange(result.Files);
+            Paths.AddRange(result.UsedAnalyzers);
+            Statistics = string.Format("{0} files found ({1})", result.Files.Count, StringUtilities.GetBytesReadable(result.TotalSize));
+            currentResult = result;
+            CanRefresh = true;
+        }
+
+        private void UpdateProgress(Tuple<string, int> progress)
+        {
+            Statistics = string.Format("{0} ({1})", progress.Item1, progress.Item2);
         }
 
         private async void RunClean()
         {
-            await CleanerUtilities.CleanData();
+            //if someone runs two refreshes at the same time there could be issues here
+            if (currentResult == null)
+            {
+                await RunRefresh();
+            }
+            CanRefresh = false;
 
-            RunRefresh();
+            //really should not be done here..
+            if (await Confirm())
+            {
+                var progressBar = new ProgressBar
+                {
+                    Maximum = currentResult.Files.Count,
+                    Width = 300,
+                    Margin = new Thickness(32)
+                };
+                await
+                    DialogHost.Show(progressBar,
+                        (DialogOpenedEventHandler)
+                            ((o, args) => StartCleaning(progressBar, args.Session)));
+            } else
+            {
+                CanRefresh = true;
+            }
         }
 
+        private async void StartCleaning(ProgressBar progressBar, DialogSession session)
+        {
+            var callback = new Progress<int>((i) =>
+            {
+                progressBar.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    progressBar.Value = i;
+                }));
+            });
+            var result = await cleanerService.CleanAsync(currentResult, callback);
+            if (result.Failures.Count > 0)
+                await progressBar.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    var failuresDialog = new FailuresDialog { FailuresListBox = { ItemsSource = result.Failures } };
+                    session.UpdateContent(failuresDialog);
+                }));
+            else
+                await progressBar.Dispatcher.BeginInvoke(new Action(session.Close));
+            CanRefresh = true;
+            await RunRefresh();
+        }
+
+        private async Task<bool> Confirm()
+        {
+            var dialog = new ConfirmationDialog
+            {
+                MessageTextBlock =
+                {
+                    Text = "Are you sure you wish to do this?  " + currentResult.Files.Count +
+                           " files will be permanently deleted."
+                }
+            };
+            var result = await DialogHost.Show(dialog);
+            return "1".Equals(result);
+        }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
