@@ -1,28 +1,31 @@
-﻿using System;
+﻿#region
+
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+
+#endregion
 
 namespace SteamCleaner.Analyzer.FileFinders
 {
     public class RedisFileFinder : IFileFinder
     {
-        Regex dirRegex = new Regex("(.*)(directx|redist|miles|support|installer)(.*)", RegexOptions.IgnoreCase);
-        Regex fileRegex = new Regex("(cab|exe|msi|so)", RegexOptions.IgnoreCase);
+        private readonly Regex dirRegex = new Regex("(.*)(directx|redist|miles|support|installer)(.*)",
+            RegexOptions.IgnoreCase);
+
+        private readonly Regex fileRegex = new Regex("(cab|exe|msi|so)", RegexOptions.IgnoreCase);
 
         public IEnumerable<string> FindFiles(IEnumerable<string> paths)
         {
-            List<string> files = new List<string>();
+            var files = new List<string>();
             Search(files, paths);
             return files;
         }
 
         public void Search(List<string> files, IEnumerable<string> paths)
         {
-            foreach (string path in paths)
+            foreach (var path in paths)
             {
                 if (!dirRegex.IsMatch(path))
                 {
@@ -36,8 +39,8 @@ namespace SteamCleaner.Analyzer.FileFinders
         private void AddFiles(List<string> files, string path)
         {
             files.AddRange(from f in Directory.GetFiles(path)
-                           where fileRegex.IsMatch(f)
-                           select f);
+                where fileRegex.IsMatch(f)
+                select f);
         }
     }
 }

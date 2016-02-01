@@ -1,10 +1,11 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+
+#endregion
 
 namespace SteamCleaner.Analyzer.Analyzers
 {
@@ -20,7 +21,7 @@ namespace SteamCleaner.Analyzer.Analyzers
         public IEnumerable<string> FindPaths()
         {
             var paths = new List<string>();
-            var productPath = GetProductDbPath();
+            var productPath = GetBattleNetPath() + GetProductDbPath();
             if (File.Exists(productPath))
             {
                 var data = File.ReadAllText(productPath);
@@ -53,14 +54,13 @@ namespace SteamCleaner.Analyzer.Analyzers
         private string GetProductDbPath()
         {
             return Path.Combine(GetBattleNetPath(),
-                                "\\Agent\\product.db");
+                "\\Agent\\product.db");
         }
 
         private string GetBattleNetPath()
         {
             return Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) +
-                                       "\\Battle.net";
+                   "\\Battle.net";
         }
-
     }
 }

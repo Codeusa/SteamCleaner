@@ -1,10 +1,12 @@
-﻿using Microsoft.Win32;
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Win32;
+
+#endregion
 
 namespace SteamCleaner.Analyzer.Analyzers
 {
@@ -26,7 +28,9 @@ namespace SteamCleaner.Analyzer.Analyzers
         {
             var paths = new List<string>();
             var is64Bit = Environment.Is64BitOperatingSystem;
-            var regPath = is64Bit ? @"Software\Wow6432Node\Ubisoft\Launcher" : @"Software\Ubisoft\Launcher";
+            var regPath = is64Bit
+                ? @"Software\Wow6432Node\Ubisoft\Launcher\Installs"
+                : @"Software\Ubisoft\Launcher\Installs";
             var root = Registry.LocalMachine.OpenSubKey(regPath);
             if (root != null)
                 paths.AddRange(
