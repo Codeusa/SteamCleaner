@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Windows;
 
 #endregion
 
@@ -21,7 +22,7 @@ namespace SteamCleaner.Analyzer.Analyzers
         public IEnumerable<string> FindPaths()
         {
             var paths = new List<string>();
-            var productPath = GetBattleNetPath() + GetProductDbPath();
+            var productPath = GetProductDbPath();
             if (File.Exists(productPath))
             {
                 var data = File.ReadAllText(productPath);
@@ -54,13 +55,13 @@ namespace SteamCleaner.Analyzer.Analyzers
         private string GetProductDbPath()
         {
             return Path.Combine(GetBattleNetPath(),
-                "\\Agent\\product.db");
+                "Agent\\product.db");
         }
 
         private string GetBattleNetPath()
         {
             return Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) +
-                   "\\Battle.net";
+                   @"\Battle.net";
         }
     }
 }
