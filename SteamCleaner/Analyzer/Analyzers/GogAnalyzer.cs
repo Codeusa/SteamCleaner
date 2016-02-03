@@ -1,10 +1,12 @@
-﻿using Microsoft.Win32;
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Win32;
+
+#endregion
 
 namespace SteamCleaner.Analyzer.Analyzers
 {
@@ -28,13 +30,13 @@ namespace SteamCleaner.Analyzer.Analyzers
                 {
                     return null;
                 }
-                List<string> paths = new List<string>();
+                var paths = new List<string>();
                 paths.AddRange(rootKey.GetSubKeyNames()
-                       .Select(keyname => rootKey.OpenSubKey(keyname))
-                       .Where(key => key != null)
-                       .Select(key => key.GetValue("PATH"))
-                       .Select(o => o?.ToString())
-                       .Where(Directory.Exists));
+                    .Select(keyname => rootKey.OpenSubKey(keyname))
+                    .Where(key => key != null)
+                    .Select(key => key.GetValue("PATH"))
+                    .Select(o => o?.ToString())
+                    .Where(Directory.Exists));
                 return paths;
             }
         }

@@ -1,18 +1,19 @@
-﻿using SteamCleaner.Utilities;
+﻿#region
+
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Data;
+using SteamCleaner.Utilities;
+
+#endregion
 
 namespace SteamCleaner
 {
-    public class FileSizeConverter : System.Windows.Data.IValueConverter
+    public class FileSizeConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            long size = (long)value;
+            var size = (long) value;
             return StringUtilities.GetBytesReadable(size);
         }
 
@@ -20,6 +21,5 @@ namespace SteamCleaner
         {
             throw new NotImplementedException();
         }
-        
     }
 }
