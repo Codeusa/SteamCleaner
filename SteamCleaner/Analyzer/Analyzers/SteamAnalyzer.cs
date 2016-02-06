@@ -29,7 +29,12 @@ namespace SteamCleaner.Analyzer.Analyzers
                 return null;
             }
             var paths = new List<string>();
-            paths.Add(FixPath(steamPath));
+            var primarySteamPath = FixPath(steamPath);
+            // Program install directory may not exist in Steam install location. See issue #27
+            if (Directory.Exists(primarySteamPath))
+            {
+                paths.Add(primarySteamPath);
+            }
             var secondaryPaths = FindSecondaryInstallPaths(steamPath);
             if (secondaryPaths != null)
             {
