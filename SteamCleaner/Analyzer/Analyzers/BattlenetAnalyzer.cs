@@ -1,12 +1,10 @@
-﻿#region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows;
-
-#endregion
+using System.Threading.Tasks;
 
 namespace SteamCleaner.Analyzer.Analyzers
 {
@@ -26,26 +24,16 @@ namespace SteamCleaner.Analyzer.Analyzers
             if (File.Exists(productPath))
             {
                 var data = File.ReadAllText(productPath);
-                var rgx = new Regex(@"[^\u0020-\u007E]");
-                data = rgx.Replace(data, Environment.NewLine);
-                using (var reader = new StringReader(data))
+                foreach (Match match in Regex.Matches(data, @"(\u0021|\u001F)(.:/.*?)(\u0012\u0002)"))
                 {
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
+                    if (match.Groups.Count != 4)
                     {
-                        line = line.Trim();
-                        line = line.Trim().Replace("!", "");
-                        line = line.Trim().Replace("!", "\"");
-                        if (string.IsNullOrEmpty(line) || string.IsNullOrWhiteSpace(line) || !line.Contains("/"))
-                            continue;
-                        if (line.StartsWith("\""))
-                        {
-                            line = line.Remove(0, 1);
-                        }
-                        if (Directory.Exists(line))
-                        {
-                            paths.Add(line);
-                        }
+                        continue;
+                    }
+                    var value = match.Groups[2].Value;
+                    if (Directory.Exists(value))
+                    {
+                        paths.Add(value);
                     }
                 }
             }
@@ -55,13 +43,14 @@ namespace SteamCleaner.Analyzer.Analyzers
         private string GetProductDbPath()
         {
             return Path.Combine(GetBattleNetPath(),
-                "Agent\\product.db");
+                                "Agent\\product.db");
         }
 
         private string GetBattleNetPath()
         {
             return Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) +
-                   @"\Battle.net";
+                                       "\\Battle.net";
         }
+
     }
 }
