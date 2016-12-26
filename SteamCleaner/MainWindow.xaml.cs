@@ -36,5 +36,10 @@ namespace SteamCleaner
         {
             Process.Start("https://github.com/Codeusa/SteamCleaner/issues");
         }
+
+        private void UlteriusMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://ulterius.io/");
+        }
     }
 }

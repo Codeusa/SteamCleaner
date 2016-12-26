@@ -55,6 +55,7 @@
                         <StackPanel>
                             <Button Content="Twitter" Click="TwitterMenuItem_OnClick" />
                             <Button Content="GitHub" Click="GitHubMenuItem_OnClick" />
+                            <Button Content="Ulterius" Click="UlteriusMenuItem_OnClick" />
                             <Button Content="Borderless Gaming" Click="BorderlessGamingMenuItem_OnClick" />
                             <Button Content="Report A Bug" Click="ReportABugMenuItem_OnClick" />
                         </StackPanel>

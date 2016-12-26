@@ -31,9 +31,8 @@ namespace SteamCleaner.Analyzer.Analyzers
             }
             var paths = new List<string>();
             var primarySteamPath = FixPath(steamPath);
-           
-            // Program install directory may not exist in Steam install location. See issue #27
-            if (Directory.Exists(primarySteamPath))
+                     // Program install directory may not exist in Steam install location. See issue #27
+            if (primarySteamPath != null && Directory.Exists(primarySteamPath))
             {
                 paths.Add(primarySteamPath);
             }
@@ -69,7 +68,9 @@ namespace SteamCleaner.Analyzer.Analyzers
                     into match
                     where match.Success
                     let path = FixPath(match.Groups[2].Value).Replace("\\\\", "\\")
+                    where path != null
                     where Directory.Exists(path)
+                    
                     select path);
             }
             return paths;
