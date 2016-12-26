@@ -23,29 +23,27 @@ namespace SteamCleaner.Analyzer.Analyzers
         {
             var paths = new List<string>();
             var productPath = GetProductDbPath();
-            if (File.Exists(productPath))
+            if (!File.Exists(productPath)) return paths;
+            var data = File.ReadAllText(productPath);
+            var rgx = new Regex(@"[^\u0020-\u007E]");
+            data = rgx.Replace(data, Environment.NewLine);
+            using (var reader = new StringReader(data))
             {
-                var data = File.ReadAllText(productPath);
-                var rgx = new Regex(@"[^\u0020-\u007E]");
-                data = rgx.Replace(data, Environment.NewLine);
-                using (var reader = new StringReader(data))
+                string line;
+                while ((line = reader.ReadLine()) != null)
                 {
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
+                    line = line.Trim();
+                    line = line.Trim().Replace("!", "");
+                    line = line.Trim().Replace("!", "\"");
+                    if (string.IsNullOrEmpty(line) || string.IsNullOrWhiteSpace(line) || !line.Contains("/"))
+                        continue;
+                    if (line.StartsWith("\""))
                     {
-                        line = line.Trim();
-                        line = line.Trim().Replace("!", "");
-                        line = line.Trim().Replace("!", "\"");
-                        if (string.IsNullOrEmpty(line) || string.IsNullOrWhiteSpace(line) || !line.Contains("/"))
-                            continue;
-                        if (line.StartsWith("\""))
-                        {
-                            line = line.Remove(0, 1);
-                        }
-                        if (Directory.Exists(line))
-                        {
-                            paths.Add(line);
-                        }
+                        line = line.Remove(0, 1);
+                    }
+                    if (Directory.Exists(line))
+                    {
+                        paths.Add(line);
                     }
                 }
             }

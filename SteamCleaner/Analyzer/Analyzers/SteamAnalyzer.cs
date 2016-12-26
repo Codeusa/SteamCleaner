@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows;
 using Microsoft.Win32;
 
 #endregion
@@ -30,12 +31,14 @@ namespace SteamCleaner.Analyzer.Analyzers
             }
             var paths = new List<string>();
             var primarySteamPath = FixPath(steamPath);
+           
             // Program install directory may not exist in Steam install location. See issue #27
             if (Directory.Exists(primarySteamPath))
             {
                 paths.Add(primarySteamPath);
             }
             var secondaryPaths = FindSecondaryInstallPaths(steamPath);
+        
             if (secondaryPaths != null)
             {
                 paths.AddRange(secondaryPaths);
@@ -104,6 +107,18 @@ namespace SteamCleaner.Analyzer.Analyzers
         {
             if (!dir.Contains("SteamApps"))
                 dir += Path.Combine("\\SteamApps", "common");
+            if (!Directory.Exists(dir))
+            {
+                try
+                {
+                    Directory.CreateDirectory(dir);
+                }
+                catch (Exception)
+                {
+
+                    return null;
+                }
+            }
             return dir;
         }
     }
