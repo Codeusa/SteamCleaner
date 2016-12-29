@@ -41,7 +41,7 @@ namespace SteamCleaner.Analyzer.Analyzers
                     {
                         line = line.Remove(0, 1);
                     }
-                    if (Directory.Exists(line))
+                    if (Directory.Exists(line) && !line.Contains("Support"))
                     {
                         paths.Add(line);
                     }
