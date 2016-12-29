@@ -135,6 +135,8 @@
     <Compile Include="Model\CleanResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\ExceptionHandler.cs" />
+    <Compile Include="Utilities\Files\SymbolicLink.cs" />
+    <Compile Include="Utilities\Files\SymbolicLinkReparseData.cs" />
     <Compile Include="Utilities\StringUtilities.cs" />
     <Compile Include="Utilities\Tools.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

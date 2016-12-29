@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using SteamCleaner.Utilities.Files;
 
 #endregion
 
@@ -38,15 +39,22 @@ namespace SteamCleaner.Analyzer.FileFinders
                 {
                     continue;
                     
-                }
+                }  
                 if (!dirRegex.IsMatch(path))
                 {
                     continue;
                 }
-                AddFiles(files, path);
-                Search(files, Directory.GetDirectories(path));
+                var targetPath = path;
+                if (SymbolicLink.IsSymbolic(path) && SymbolicLink.Exists(path))
+                {
+                    targetPath = SymbolicLink.GetTarget(path);
+                }
+                AddFiles(files, targetPath);
+                Search(files, Directory.GetDirectories(targetPath));
             }
         }
+
+      
 
         private void AddFiles(List<string> files, string path)
         {
