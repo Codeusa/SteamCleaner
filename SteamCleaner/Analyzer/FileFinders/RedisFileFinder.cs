@@ -14,6 +14,8 @@ namespace SteamCleaner.Analyzer.FileFinders
         private readonly Regex dirRegex = new Regex("(.*)(directx|redist|miles|support|installer)(.*)",
             RegexOptions.IgnoreCase);
 
+      
+
         private readonly Regex fileRegex = new Regex("(cab|exe|msi|so)", RegexOptions.IgnoreCase);
 
         public IEnumerable<string> FindFiles(IEnumerable<string> paths)
@@ -27,6 +29,16 @@ namespace SteamCleaner.Analyzer.FileFinders
         {
             foreach (var path in paths)
             {
+                //These three games put game files in the support folders
+                if (path.Contains("Heroes of the Storm") || path.Contains("StarCraft"))
+                {
+                    continue;
+                }
+                if (path.Contains("Penumbra Overture\\redist"))
+                {
+                    continue;
+                    
+                }
                 if (!dirRegex.IsMatch(path))
                 {
                     continue;
