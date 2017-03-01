@@ -121,7 +121,7 @@ namespace SteamCleaner.Analyzer
         private void CheckNesting(List<string> paths)
         {
             //Check if this still works!
-            var nested = paths.Select(Directory.GetDirectories)
+            var nested = paths.Where(Directory.Exists).Select(Directory.GetDirectories)
                 .SelectMany(nestedGameFolders => nestedGameFolders)
                 .ToList();
             paths.AddRange(nested);
