@@ -3,6 +3,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -36,13 +37,15 @@ namespace SteamCleaner
 
             CleanCommand = new ActionCommand(o => RunClean(), o => CanRefresh);
             RefreshCommand = new ActionCommand(async o => await RunRefresh(), o => CanRefresh);
-
+            RainwayCommand = new ActionCommand(o => Process.Start("https://rainway.io/?ref=steamcleaner"));
             analyzerService = new AnalyzerService();
             cleanerService = new CleanerService();
 
             //TODO run on a background thread, add spinner etc
             Init();
         }
+
+        public ActionCommand RainwayCommand { get; set; }
 
         public ObservableCollection<string> Paths { get; }
 
@@ -73,6 +76,8 @@ namespace SteamCleaner
                 OnPropertyChanged();
             }
         }
+
+    
 
         public event PropertyChangedEventHandler PropertyChanged;
 

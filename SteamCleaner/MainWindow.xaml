@@ -71,6 +71,11 @@
                 </DataGrid.Columns>
             </DataGrid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1" Margin="0 -60 8 0">
+                <Button Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" Margin="8"
+                        ToolTip="Check Out Rainway"
+                        Command="{Binding RainwayCommand}" Width="76" Height="76" >
+                    <Image Source="pack://application:,,,/master-glyph.png" Width="48" Height="32" />
+                </Button>
                 <Button Style="{DynamicResource MaterialDesignFloatingActionAccentButton}" Margin="8"
                                     ToolTip="Clean..."
                                     Command="{Binding CleanCommand}">
