@@ -38,6 +38,10 @@ namespace SteamCleaner.Analyzer.FileFinders
                 if (path.Contains("Penumbra Overture\\redist"))
                 {
                     continue;
+                }
+                if (path.Contains("Medieval II Total War\\miles"))
+                {
+                    continue;
                     
                 }  
                 if (!dirRegex.IsMatch(path))
